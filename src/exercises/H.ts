@@ -415,15 +415,15 @@ const H5: Generator[] = [
   },
   {
     id: "H5.atb",
-    title: "Montar Aᵀb",
+    title: "Montar Aᵀy",
     level: 2,
     make: (r) => {
       const d = dataset(r);
       return {
-        prompt: `Para ajustar a reta $y = a + bx$ aos pontos $${pts(d.xs, d.ys)}$, calcule $A^T\\vec b$.`,
+        prompt: `Para ajustar a reta $y = a + bx$ aos pontos $${pts(d.xs, d.ys)}$, calcule $A^T\\vec y$.`,
         answer: { kind: "vector", value: [d.Sy, d.Sxy] },
-        hint: "$\\vec b$ guarda os $y_i$. Então $A^T\\vec b = \\big(\\sum y_i,\\; \\sum x_iy_i\\big)$.",
-        solution: [`$\\sum y_i = ${n(d.Sy)}$`, `$\\sum x_iy_i = ${d.xs.map((x, i) => `${p(x)}\\cdot${p(d.ys[i])}`).join(" + ")} = ${n(d.Sxy)}$`, `$A^T\\vec b = ${tp([d.Sy, d.Sxy])}$`],
+        hint: "$\\vec y$ guarda os $y_i$. Então $A^T\\vec y = \\big(\\sum y_i,\\; \\sum x_iy_i\\big)$.",
+        solution: [`$\\sum y_i = ${n(d.Sy)}$`, `$\\sum x_iy_i = ${d.xs.map((x, i) => `${p(x)}\\cdot${p(d.ys[i])}`).join(" + ")} = ${n(d.Sxy)}$`, `$A^T\\vec y = ${tp([d.Sy, d.Sxy])}$`],
       };
     },
   },
@@ -440,8 +440,8 @@ const H5: Generator[] = [
       return {
         prompt: `Ache a reta de mínimos quadrados $y = a + bx$ para os pontos $${pts(d.xs, d.ys)}$.`,
         answer: { kind: "vector", value: [d.a, d.b], names: ["a", "b"] },
-        hint: "Resolva as equações normais $A^TA\\,(a, b) = A^T\\vec b$.",
-        solution: [`$A^TA = ${M(AtA)}$ e $A^T\\vec b = ${tp([d.Sy, d.Sxy])}$`, `$\\begin{cases} ${texLinear([d.k, d.Sx], ["a", "b"])} = ${n(d.Sy)} \\\\ ${texLinear([d.Sx, d.Sxx], ["a", "b"])} = ${n(d.Sxy)} \\end{cases}$`, `$a = ${n(d.a)}$ e $b = ${n(d.b)}$`],
+        hint: "Resolva as equações normais $A^TA\\,(a, b) = A^T\\vec y$.",
+        solution: [`$A^TA = ${M(AtA)}$ e $A^T\\vec y = ${tp([d.Sy, d.Sxy])}$`, `$\\begin{cases} ${texLinear([d.k, d.Sx], ["a", "b"])} = ${n(d.Sy)} \\\\ ${texLinear([d.Sx, d.Sxx], ["a", "b"])} = ${n(d.Sxy)} \\end{cases}$`, `$a = ${n(d.a)}$ e $b = ${n(d.b)}$`],
       };
     },
   },

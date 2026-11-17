@@ -194,7 +194,7 @@ export const LESSONS: LessonMeta[] = [
     { tex: "\\vec e_i = \\dfrac{\\vec u_i}{\\|\\vec u_i\\|}", text: "Depois, normaliza." },
   ]),
   L("H5", "a-reta-que-mais-se-aproxima", "A reta que mais se aproxima", "autovalores", "2d", "Mínimos quadrados e as equações normais.", "minimos-quadrados", [
-    { tex: "A^{T}A\\,\\hat{\\vec x} = A^{T}\\vec b", text: "Equações normais." },
+    { tex: "A^{T}A\\,\\hat{\\vec x} = A^{T}\\vec y", text: "Equações normais; o vetor y guarda os valores medidos." },
     { tex: "\\min \\sum (y_i - \\hat y_i)^2", text: "A melhor reta minimiza a soma dos quadrados dos resíduos." },
   ]),
 ];
