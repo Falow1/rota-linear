@@ -1,0 +1,203 @@
+/* Sliders, vetores e matrizes editáveis (mesma lógica do Equação Viva, visual do Rota Linear) */
+.control-row {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  grid-template-areas: "label slider num";
+  align-items: center;
+  gap: 10px;
+}
+.control-row > label {
+  grid-area: label;
+  overflow: hidden;
+  font-size: 1rem; font-weight: 800;
+  color: var(--text-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.control-row > .slider { grid-area: slider; }
+.slider-num {
+  grid-area: num;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.slider-num .num { width: 64px; }
+
+/* ---------- Slider ----------
+ * Um <input type="range"> de verdade (teclado e leitor de tela) por cima de um trilho desenhado.
+ * O centro da bolinha anda de th/2 até 100% − th/2; --from, --to, --pos e --zero usam essa mesma conta.
+ */
+.slider {
+  --th: 22px;
+  --h: 28px;
+  --sl: var(--c);
+  position: relative;
+  min-width: 0;
+  height: var(--h);
+}
+.slider-track,
+.slider-fill,
+.slider-zero {
+  position: absolute;
+  top: 50%;
+  pointer-events: none;
+}
+.slider-track {
+  left: 0;
+  right: 0;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+}
+.slider-fill {
+  left: var(--from);
+  width: calc(var(--to) - var(--from));
+  height: 8px;
+  margin-top: -4px;
+  border-radius: var(--radius-pill);
+  background: var(--sl);
+}
+.slider-zero {
+  left: var(--zero);
+  width: 2px;
+  height: 12px;
+  margin: -6px 0 0 -1px;
+  border-radius: 1px;
+  background: var(--text-3);
+}
+.slider input {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.slider input:focus-visible { outline: none; }
+.slider input::-webkit-slider-runnable-track { height: var(--h); border: 0; background: transparent; }
+.slider input::-moz-range-track { height: var(--h); border: 0; background: transparent; }
+.slider input::-moz-range-progress { background: transparent; }
+.slider input::-webkit-slider-thumb {
+  box-sizing: border-box;
+  width: var(--th);
+  height: var(--th);
+  margin-top: calc((var(--h) - var(--th)) / 2);
+  border: 3px solid var(--sl);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--sl) 40%, transparent);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: box-shadow 0.12s, transform 0.12s;
+}
+.slider input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--th);
+  height: var(--th);
+  border: 3px solid var(--sl);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--sl) 40%, transparent);
+  transition: box-shadow 0.12s, transform 0.12s;
+}
+.slider input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--sl); }
+.slider input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--sl); }
+.slider[data-dragging] input { cursor: grabbing; }
+.slider[data-dragging] input::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 9px color-mix(in srgb, var(--sl) 22%, transparent);
+}
+.slider[data-dragging] input::-moz-range-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 9px color-mix(in srgb, var(--sl) 22%, transparent);
+}
+.slider-bubble {
+  position: absolute;
+  z-index: 2;
+  left: var(--pos);
+  bottom: calc(50% + var(--th) / 2 + 6px);
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--sl);
+  color: var(--surface);
+  font-size: 12px;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.12s, transform 0.12s;
+}
+.slider[data-dragging] .slider-bubble,
+.slider input:focus-visible ~ .slider-bubble {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Botões − e + (só no toque; segurar repete) */
+.step-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 2px solid var(--border-strong); border-bottom-width: 3px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.step-btn:active { background: var(--surface-2); }
+@media (pointer: fine), (pointer: none) {
+  .step-btn { display: none; }
+}
+@media (pointer: coarse) {
+  .slider { --th: 28px; --h: 44px; }
+}
+/* Tela estreita: rótulo e valor em cima, slider com a largura inteira embaixo */
+@media (max-width: 479px) {
+  .control-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label num"
+      "slider slider";
+    row-gap: 2px;
+  }
+}
+.vec-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.vec-input .vlabel { min-width: 28px; font-weight: 800; }
+.vec-input .num { width: 64px; }
+.vec-input .paren { color: var(--text-3); font-size: 20px; line-height: 1; }
+
+.matrix-input {
+  display: inline-grid;
+  gap: 4px;
+  padding: 6px 10px;
+  border-left: 2px solid var(--text-2);
+  border-right: 2px solid var(--text-2);
+  border-radius: 4px;
+}
+.matrix-input .num { width: 58px; }
+.matrix-input .bar { border-left: 1px solid var(--border-strong); margin-left: 4px; padding-left: 4px; }
+.task-controls { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; padding: 14px; border-radius: 16px; background: var(--surface-2); }
+.task-controls .num { background: var(--surface); }

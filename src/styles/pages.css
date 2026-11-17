@@ -1,0 +1,350 @@
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px max(20px, var(--safe-r)) 40px max(20px, var(--safe-l));
+}
+.page.narrow { max-width: 760px; }
+.lead { font-size: 1.08rem; max-width: 62ch; margin-top: 6px; }
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.center-page { text-align: center; padding-top: 12vh; }
+.lost { display: inline-grid; place-items: center; width: 110px; height: 110px; border-radius: 32px; background: var(--brand-soft); color: var(--brand); margin-bottom: 16px; }
+.ok-text { color: var(--ok-text); font-weight: 800; display: inline-flex; gap: 6px; align-items: center; }
+
+/* ---------- Início ---------- */
+
+.hero-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 28px;
+  border-radius: 28px;
+  background: var(--c-soft);
+  border: 2px solid color-mix(in srgb, var(--c) 25%, transparent);
+  overflow: hidden;
+}
+.hero-text { flex: 1; min-width: 0; }
+.hero-text h1 { margin-top: 10px; }
+.hero-lesson { margin-top: 8px; font-size: 1.1rem; }
+.hero-art {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 180px;
+  height: 180px;
+  border-radius: 40px;
+  background: var(--c);
+  color: var(--on-c);
+  transform: rotate(-6deg);
+  box-shadow: 0 8px 0 var(--c-edge);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  text-decoration: none;
+}
+.stat.link:hover { border-color: var(--border-strong); }
+.stat b { display: block; font-size: 1.35rem; font-weight: 900; line-height: 1.1; }
+.stat small { color: var(--text-2); font-weight: 700; font-size: 0.85rem; }
+.stat-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+.stat-ico.ok { background: var(--ok-soft); color: var(--ok); }
+.stat-ico.gold { background: var(--gold-soft); color: var(--gold); }
+.stat-ico.flame.on { background: color-mix(in srgb, var(--flame) 15%, transparent); color: var(--flame); }
+.stat-ico.brand { background: var(--brand-soft); color: var(--brand); }
+
+.how h2 { margin-bottom: 10px; }
+.how-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+.how-list li { display: flex; gap: 10px; align-items: flex-start; }
+.how-list .icon { color: var(--brand); flex: none; margin-top: 2px; }
+
+.course-progress { max-width: 520px; }
+
+/* ---------- Cartões de trilha ---------- */
+
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.track-grid.big { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+.track-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-bottom-width: 5px;
+  text-decoration: none;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.track-card:hover { border-color: color-mix(in srgb, var(--c) 45%, var(--border)); transform: translateY(-2px); }
+.track-card:active { transform: translateY(1px); }
+.track-art {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: var(--c);
+  color: var(--on-c);
+  box-shadow: 0 4px 0 var(--c-edge);
+}
+.track-card.compact .track-art { width: 52px; height: 52px; border-radius: 16px; }
+.track-body { display: flex; flex-direction: column; min-width: 0; }
+.track-letter { font-size: 0.78rem; font-weight: 900; color: var(--c); letter-spacing: 0.04em; text-transform: uppercase; }
+.track-title { font-weight: 900; font-size: 1.05rem; line-height: 1.2; }
+.track-summary { color: var(--text-2); font-size: 0.9rem; margin-top: 4px; }
+.track-count { color: var(--text-3); font-size: 0.85rem; font-weight: 750; margin-top: 2px; }
+.ring-wrap { position: relative; display: inline-grid; place-items: center; flex: none; }
+.ring-center { position: absolute; inset: 0; display: grid; place-items: center; color: var(--c); }
+.track-dots { grid-column: 1 / -1; display: flex; gap: 6px; padding-top: 2px; }
+.tdot { flex: 1; height: 8px; border-radius: 8px; background: var(--surface-3); }
+.tdot.andamento { background: color-mix(in srgb, var(--c) 40%, var(--surface-3)); }
+.tdot.concluida { background: var(--c); }
+.tdot.dominada { background: var(--gold); }
+
+/* ---------- Caminho da trilha ---------- */
+
+.track-banner {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+  border-radius: 28px;
+  background: var(--c-soft);
+  border: 2px solid color-mix(in srgb, var(--c) 25%, transparent);
+}
+.banner-art {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 36px;
+  background: var(--c);
+  color: var(--on-c);
+  box-shadow: 0 7px 0 var(--c-edge);
+  transform: rotate(4deg);
+}
+
+.path {
+  list-style: none;
+  margin: 28px auto 8px;
+  padding: 0;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.path-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform: translateX(var(--dx, 0));
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+}
+.path-step:has(.node-pop) { z-index: 2; }
+.node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 72px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-3);
+  color: var(--text-3);
+  box-shadow: 0 7px 0 var(--border-strong);
+  transition: transform 0.08s, box-shadow 0.08s;
+  text-decoration: none;
+}
+.node:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--border-strong); }
+.node.andamento,
+.node.concluida,
+.node.current {
+  background: var(--c);
+  color: var(--on-c);
+  box-shadow: 0 7px 0 var(--c-edge);
+}
+.node.andamento:active,
+.node.concluida:active,
+.node.current:active { box-shadow: 0 2px 0 var(--c-edge); }
+.node.dominada { background: var(--gold); color: #fff; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
+.node.current::before {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, var(--c) 35%, transparent);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% { transform: scale(1.08); opacity: 0.5; }
+}
+.node-n { font-weight: 900; font-size: 1.5rem; }
+.node-flag {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--c);
+  border: 2px solid var(--border);
+  font-weight: 900;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  animation: bob 1.6s ease-in-out infinite;
+}
+.node-flag::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -7px;
+  border: 7px solid transparent;
+  border-top-color: var(--border);
+}
+@keyframes bob { 50% { transform: translate(-50%, -4px); } }
+.node.special { background: var(--surface); color: var(--c); border: 3px solid var(--border-strong); box-shadow: 0 6px 0 var(--border-strong); }
+.node.special.trophy.ready { background: var(--gold); color: #fff; border-color: transparent; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
+.node-label { font-weight: 850; line-height: 1.25; margin-top: 6px; }
+.node-pop {
+  width: min(320px, calc(100vw - 32px));
+  margin-top: 6px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+  animation: pop 0.18s ease-out;
+}
+@keyframes pop { from { opacity: 0; transform: translateY(-6px) scale(0.98); } }
+
+.track-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+
+/* ---------- Revisão e fichas ---------- */
+
+.review-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--brand-soft);
+  border: 2px solid color-mix(in srgb, var(--brand) 25%, transparent);
+}
+.review-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--brand-edge);
+}
+
+.ficha-list { display: flex; flex-direction: column; gap: 10px; }
+.ficha-acc {
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+}
+.ficha-acc summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 60px;
+}
+.ficha-acc summary::-webkit-details-marker { display: none; }
+.ficha-acc[open] summary .icon:last-child { transform: rotate(180deg); }
+.ficha-art {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--c);
+  color: var(--on-c);
+}
+.ficha-body { padding: 4px 16px 16px; }
+.ficha-lesson { padding: 10px 0; border-top: 2px dashed var(--border); }
+.ficha-lesson h3 a { text-decoration: none; color: var(--c); }
+.ficha-lesson h3 a:hover { text-decoration: underline; }
+.ficha-item { margin-top: 4px; }
+.ficha-item .katex-display { text-align: left; margin: 4px 0 0; }
+.ficha-item .katex-display > .katex { text-align: left; }
+.ficha-sheet { margin-top: 12px; }
+.ficha-track { margin-top: 20px; color: var(--c); }
+.ficha-page .ficha-lesson h3 { color: var(--c); }
+
+@media print {
+  .ficha-page { padding: 0; }
+  .ficha-lesson { break-inside: avoid; }
+}
+
+/* ---------- Sobre ---------- */
+
+.about-steps { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 8px; }
+.card h2 { margin-bottom: 8px; }
+
+/* ---------- Celular ---------- */
+
+@media (max-width: 799px) {
+  .page { padding-top: 18px; padding-left: max(16px, var(--safe-l)); padding-right: max(16px, var(--safe-r)); }
+  .hero-card { padding: 20px; border-radius: 24px; }
+  .hero-art { position: absolute; right: -24px; top: -20px; width: 120px; height: 120px; opacity: 0.18; box-shadow: none; }
+  .hero-art svg { width: 80px; height: 80px; }
+  .hero-text .btn { flex: 1; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { padding: 12px; gap: 10px; }
+  .stat-ico { width: 38px; height: 38px; }
+  .how-list { grid-template-columns: 1fr; }
+  .track-banner { padding: 18px; }
+  .banner-art { width: 84px; height: 84px; border-radius: 24px; }
+  .banner-art svg { width: 60px; height: 60px; }
+  .review-hero { flex-direction: column; align-items: stretch; text-align: left; }
+  .review-ico { display: none; }
+  .track-grid.big { grid-template-columns: 1fr; }
+}

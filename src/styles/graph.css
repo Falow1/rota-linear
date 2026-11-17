@@ -1,0 +1,108 @@
+/* Gráficos 2D (Mafs) e 3D (three.js) dentro das figuras */
+
+.stage-fig,
+.fig-box {
+  container-type: size;
+}
+
+.mafs-label {
+  font-family: var(--font);
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.label3d {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 0 3px var(--surface), 0 0 3px var(--surface), 0 0 2px var(--surface);
+}
+
+.graph-overlay {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.graph-overlay.tr { top: 10px; right: 10px; }
+.graph-overlay.tl { top: 10px; left: 10px; }
+.graph-overlay.bl { bottom: 10px; left: 10px; }
+.graph-overlay.br { bottom: 10px; right: 10px; }
+.graph-overlay .btn {
+  min-height: 36px;
+  padding: 4px 10px;
+  border-width: 2px;
+  border-bottom-width: 3px;
+  border-radius: 11px;
+  font-size: 0.85rem;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+}
+.graph-overlay .btn[aria-pressed="true"] { --b-text: var(--c); border-color: color-mix(in srgb, var(--c) 50%, var(--border)); }
+.frame-btn .icon { display: none; }
+.views-full { display: flex; flex-wrap: wrap; gap: 6px; }
+.views-compact { display: none; position: relative; }
+.view-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 8;
+  min-width: 170px;
+  padding: 4px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+.view-menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font-weight: 750;
+  text-align: left;
+}
+.view-menu button[aria-checked="true"] { color: var(--c); }
+.view-menu button:active { background: var(--surface-2); }
+
+@container (max-width: 560px) {
+  .views-full { display: none; }
+  .views-compact { display: block; }
+  .frame-btn { justify-content: center; width: 38px; padding: 0 !important; }
+  .frame-btn .icon { display: block; }
+  .frame-label { display: none; }
+}
+
+/* Legenda / leitura sobre o gráfico */
+.graph-legend {
+  padding: 6px 10px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  font-size: 0.85rem;
+  font-weight: 750;
+  pointer-events: none;
+}
+
+/* Ponto de palpite */
+.ghost-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--text-3);
+  color: var(--surface);
+  font-size: 0.8rem;
+  vertical-align: middle;
+}

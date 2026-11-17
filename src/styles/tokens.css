@@ -1,0 +1,159 @@
+/*
+ * Tokens do Rota Linear. Tema claro é o padrão; o escuro entra pelo botão (data-theme="dark").
+ * Cada trilha tem três tons: --c (principal), --c-edge (borda de baixo dos botões) e --c-soft (fundos).
+ * Componentes usam --c/--c-edge/--c-soft; a página define quais valem (classe .t-<trilha> ou o padrão da marca).
+ */
+:root {
+  --bg: #f4f5fa;
+  --surface: #ffffff;
+  --surface-2: #eef0f7;
+  --surface-3: #e3e6f0;
+  --text: #1b1f33;
+  --text-2: #4b5270;
+  --text-3: #7e85a0;
+  --border: #e0e3ee;
+  --border-strong: #c7ccdc;
+
+  --brand: #3b5bfd;
+  --brand-edge: #2a43c9;
+  --brand-soft: #e6ebff;
+
+  --ok: #17a34a;
+  --ok-edge: #10803a;
+  --ok-soft: #dcf8e6;
+  --ok-text: #0d6b30;
+  --bad: #ea580c;
+  --bad-edge: #bb440a;
+  --bad-soft: #ffeadb;
+  --bad-text: #a33b06;
+  --gold: #f5b100;
+  --gold-soft: #fff4cc;
+  --flame: #ff7a1a;
+
+  /* Trilhas */
+  --t-vetores: #2f6bff;       --t-vetores-edge: #1f4fd1;       --t-vetores-soft: #e3ecff;
+  --t-retas-planos: #16a34a;  --t-retas-planos-edge: #0f7a37;  --t-retas-planos-soft: #dcfae6;
+  --t-conicas: #8b5cf6;       --t-conicas-edge: #6a3fd6;       --t-conicas-soft: #eee8ff;
+  --t-quadricas: #db2777;     --t-quadricas-edge: #a91a5a;     --t-quadricas-soft: #fde4ef;
+  --t-sistemas: #f97316;      --t-sistemas-edge: #c2570b;      --t-sistemas-soft: #ffeddb;
+  --t-espacos: #0d9488;       --t-espacos-edge: #0a6e66;       --t-espacos-soft: #d6f5f1;
+  --t-transformacoes: #4f46e5; --t-transformacoes-edge: #3a31b8; --t-transformacoes-soft: #e5e4fd;
+  --t-autovalores: #f43f5e;   --t-autovalores-edge: #c42645;   --t-autovalores-soft: #ffe4e9;
+
+  /* Objetos matemáticos (mesma cor no gráfico e na fórmula) */
+  --obj1: #2563eb;
+  --obj2: #e11d48;
+  --obj3: #059669;
+  --obj4: #7c3aed;
+  --obj5: #d97706;
+  --obj6: #0891b2;
+  --obj-muted: #8a90a8;
+
+  --grid: #e8ebf3;
+  --grid-strong: #d0d5e3;
+  --axis: #6b7190;
+
+  --c: var(--brand);
+  --c-edge: var(--brand-edge);
+  --c-soft: var(--brand-soft);
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgba(27, 31, 51, 0.06), 0 4px 14px rgba(27, 31, 51, 0.06);
+  --shadow-lg: 0 10px 40px rgba(27, 31, 51, 0.16);
+  --on-c: #ffffff;
+  --focus: 0 0 0 3px color-mix(in srgb, var(--c) 35%, transparent);
+  --font: "Nunito Variable", "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --tap: 44px;
+  --nav-h: 64px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  color-scheme: light;
+}
+
+/* Mafs acompanha os tokens (seletor duplo para vencer o core.css do Mafs) */
+.MafsView.MafsView {
+  --grid-line-subdivision-color: var(--grid);
+  --mafs-bg: var(--surface);
+  --mafs-fg: var(--text);
+  --mafs-line-color: var(--grid);
+  --mafs-origin-color: var(--axis);
+  --mafs-blue: var(--obj1);
+  --mafs-red: var(--obj2);
+  --mafs-green: var(--obj3);
+  --mafs-violet: var(--obj4);
+  --mafs-orange: var(--obj5);
+}
+
+:root[data-theme="dark"] {
+  --bg: #11131d;
+  --surface: #1a1d2b;
+  --surface-2: #232737;
+  --surface-3: #2d3245;
+  --text: #eef0f8;
+  --text-2: #b4b9d0;
+  --text-3: #7f859e;
+  --border: #2c3144;
+  --border-strong: #41475e;
+
+  --brand: #6b86ff;
+  --brand-edge: #4561e6;
+  --brand-soft: #232c52;
+
+  --ok: #2ec866;
+  --ok-edge: #1f9a4c;
+  --ok-soft: #173326;
+  --ok-text: #6ee79b;
+  --bad: #ff8a3d;
+  --bad-edge: #d0661f;
+  --bad-soft: #3a2517;
+  --bad-text: #ffb27f;
+  --gold: #ffc933;
+  --gold-soft: #3a3115;
+
+  --t-vetores: #5b8cff;       --t-vetores-edge: #3a69e0;       --t-vetores-soft: #1f2a4d;
+  --t-retas-planos: #2fc463;  --t-retas-planos-edge: #1f9a4c;  --t-retas-planos-soft: #16301f;
+  --t-conicas: #a585ff;       --t-conicas-edge: #8160e6;       --t-conicas-soft: #2b2448;
+  --t-quadricas: #f0569a;     --t-quadricas-edge: #c93577;     --t-quadricas-soft: #3d1d2d;
+  --t-sistemas: #ff9445;      --t-sistemas-edge: #d4701f;      --t-sistemas-soft: #3b2616;
+  --t-espacos: #26c2b3;       --t-espacos-edge: #179a8d;       --t-espacos-soft: #143330;
+  --t-transformacoes: #7f78ff; --t-transformacoes-edge: #5d55e0; --t-transformacoes-soft: #25244d;
+  --t-autovalores: #ff6680;   --t-autovalores-edge: #d6455f;   --t-autovalores-soft: #3d1c24;
+
+  --obj1: #6b9bff;
+  --obj2: #ff6b8a;
+  --obj3: #34d399;
+  --obj4: #b190ff;
+  --obj5: #fbbf24;
+  --obj6: #22d3ee;
+  --obj-muted: #8c92ab;
+
+  --grid: #262a3b;
+  --grid-strong: #363b50;
+  --axis: #9aa0b8;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
+/* Cor da trilha em qualquer elemento: <div class="t-vetores"> */
+.t-vetores { --c: var(--t-vetores); --c-edge: var(--t-vetores-edge); --c-soft: var(--t-vetores-soft); }
+.t-retas-planos { --c: var(--t-retas-planos); --c-edge: var(--t-retas-planos-edge); --c-soft: var(--t-retas-planos-soft); }
+.t-conicas { --c: var(--t-conicas); --c-edge: var(--t-conicas-edge); --c-soft: var(--t-conicas-soft); }
+.t-quadricas { --c: var(--t-quadricas); --c-edge: var(--t-quadricas-edge); --c-soft: var(--t-quadricas-soft); }
+.t-sistemas { --c: var(--t-sistemas); --c-edge: var(--t-sistemas-edge); --c-soft: var(--t-sistemas-soft); }
+.t-espacos { --c: var(--t-espacos); --c-edge: var(--t-espacos-edge); --c-soft: var(--t-espacos-soft); }
+.t-transformacoes { --c: var(--t-transformacoes); --c-edge: var(--t-transformacoes-edge); --c-soft: var(--t-transformacoes-soft); }
+.t-autovalores { --c: var(--t-autovalores); --c-edge: var(--t-autovalores-edge); --c-soft: var(--t-autovalores-soft); }
+
+.obj1 { color: var(--obj1); }
+.obj2 { color: var(--obj2); }
+.obj3 { color: var(--obj3); }
+.obj4 { color: var(--obj4); }
+.obj5 { color: var(--obj5); }
+.obj6 { color: var(--obj6); }
+.obj-muted { color: var(--obj-muted); }
