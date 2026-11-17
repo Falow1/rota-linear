@@ -375,6 +375,15 @@ export function ImplicitCurve({ F, color = "var(--obj1)", weight = 3, res = 160,
   return <path d={d} style={{ stroke: color }} strokeWidth={weight} fill="none" strokeLinecap="round" strokeDasharray={dashed ? `0 ${weight * 2.6}` : undefined} />;
 }
 
+/** Curva paramétrica t ↦ (x, y): elipses, ramos de hipérbole e parábolas que mudam durante uma animação. */
+export function ParamCurve({ xy, domain, color = "var(--obj1)", weight = 3, dashed = false, opacity = 1 }: { xy: (t: number) => P2; domain: P2; color?: string; weight?: number; dashed?: boolean; opacity?: number }) {
+  return (
+    <g className={dashed ? "rl-curve dotted" : "rl-curve"}>
+      <Plot.Parametric xy={xy} domain={domain} color={color} weight={weight} opacity={opacity} />
+    </g>
+  );
+}
+
 /** Grade gerada por dois vetores b1, b2 (imagem da grade canônica por [b1 b2]). */
 export function BasisGrid({ b1, b2, n = 8, color = "var(--obj4)", opacity = 0.35, origin = [0, 0] }: { b1: P2; b2: P2; n?: number; color?: string; opacity?: number; origin?: P2 }) {
   const lines: ReactNode[] = [];
