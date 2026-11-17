@@ -24,7 +24,7 @@ export function Home() {
           <>
             <div className="hero-text">
               <span className="chip">
-                {track.letter} · {track.title}
+                Rota {track.num} · {track.title}
               </span>
               <h1>{started ? (st === "andamento" ? "Continue de onde parou" : "Próxima parada") : "Bora começar?"}</h1>
               <p className="hero-lesson">
@@ -38,8 +38,8 @@ export function Home() {
                   {st === "andamento" ? "Continuar lição" : "Começar lição"}
                 </Link>
                 {!started && (
-                  <Link to="/trilhas" className="btn soft">
-                    Ver todas as trilhas
+                  <Link to="/rotas" className="btn soft">
+                    Ver todas as rotas
                   </Link>
                 )}
               </div>
@@ -107,8 +107,8 @@ export function Home() {
 
       <section className="mt-24">
         <div className="section-head">
-          <h2>Trilhas</h2>
-          <Link to="/trilhas" className="btn ghost small">
+          <h2>Rotas</h2>
+          <Link to="/rotas" className="btn ghost small">
             Ver detalhes <Icon name="arrowRight" size={16} />
           </Link>
         </div>
@@ -155,7 +155,7 @@ function ProgressStrip({ done }: { done: number }) {
       </div>
       <ProgressBar value={done / LESSONS.length} label="Progresso no curso" />
       <p className="faint small-text mt-8">
-        {TRACKS.length} trilhas · {LESSONS.length} lições · o progresso fica salvo só neste navegador
+        {TRACKS.length} rotas · {LESSONS.length} lições · o progresso fica salvo só neste navegador
 
       </p>
     </section>

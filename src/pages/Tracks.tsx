@@ -4,18 +4,18 @@ import { doneCount, statusOf, useProgress } from "../learn/progress";
 import { Ring } from "../ui/Feedback";
 import { Icon, TrackIcon } from "../ui/icons";
 
-/** Cartão de trilha com anel de progresso. `compact` é a versão da página inicial. */
+/** Cartão de rota com anel de progresso. `compact` é a versão da página inicial. */
 export function TrackCard({ track, compact = false }: { track: Track; compact?: boolean }) {
   const p = useProgress();
   const ls = lessonsOf(track.id);
   const done = doneCount(p, ls.map((l) => l.id));
   return (
-    <Link to={`/trilha/${track.id}`} className={`track-card t-${track.id}${compact ? " compact" : ""}`}>
+    <Link to={`/rota/${track.id}`} className={`track-card t-${track.id}${compact ? " compact" : ""}`}>
       <span className="track-art">
         <TrackIcon id={track.id} size={compact ? 40 : 48} />
       </span>
       <span className="track-body">
-        <span className="track-letter">Trilha {track.letter}</span>
+        <span className="track-letter">Rota {track.num}</span>
         <span className="track-title">{track.title}</span>
         {!compact && <span className="track-summary">{track.summary}</span>}
         <span className="track-count tabular">
@@ -39,9 +39,9 @@ export function TrackCard({ track, compact = false }: { track: Track; compact?: 
 export function Tracks() {
   return (
     <div className="page">
-      <h1>Trilhas</h1>
+      <h1>Rotas</h1>
       <p className="muted lead">
-        Oito trilhas, na ordem da disciplina. Nada fica trancado: siga a ordem sugerida ou pule para o que precisar estudar.
+        Oito rotas, na ordem da disciplina. Nada fica trancado: siga a ordem sugerida ou pule para o que precisar estudar.
       </p>
       <div className="track-grid big mt-16">
         {TRACKS.map((t) => (

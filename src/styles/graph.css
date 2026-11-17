@@ -1,61 +1,240 @@
-/* Gráficos 2D (Mafs) e 3D (three.js) dentro das figuras */
+/* Figuras 2D (Mafs + desenho próprio) e 3D (three.js) */
 
 .stage-fig,
 .fig-box {
   container-type: size;
 }
 
-.mafs-label {
+.plane2d {
+  position: absolute;
+  inset: 0;
+  background: var(--fig-bg);
+}
+
+/* ---------- Grade de pontos e eixos ---------- */
+.rl-grid-dot { fill: var(--grid-dot); }
+.rl-axis {
+  stroke: var(--axis);
+  stroke-width: 1.75px;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.MafsView .rl-axis-tip {
+  fill: none;
+  stroke: var(--axis);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+.rl-axis-name {
+  fill: var(--axis);
   font-family: var(--font);
+  font-size: 14px;
+  font-style: italic;
   font-weight: 800;
+}
+.rl-tick {
+  fill: var(--text-3);
+  font-family: var(--font);
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   paint-order: stroke;
-  stroke: var(--surface);
-  stroke-width: 4px;
+  stroke: var(--fig-bg);
+  stroke-width: 3px;
   stroke-linejoin: round;
 }
-.label3d {
+
+/* ---------- Setas, linhas, pontos ---------- */
+.MafsView .rl-arrow-halo {
+  fill: none;
+  stroke: var(--a);
+  stroke-linecap: round;
+  opacity: 0.14;
+}
+.MafsView .rl-arrow-shaft {
+  fill: none;
+  stroke: var(--a);
+  stroke-linecap: round;
+}
+.MafsView .rl-arrow-head {
+  fill: var(--a);
+  stroke: var(--a);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.rl-arrow-tail {
+  fill: var(--fig-bg);
+  stroke: var(--a);
+  stroke-width: 2.25px;
+}
+.MafsView .rl-line {
+  fill: none;
+  stroke-linecap: round;
+}
+.rl-inf.dotted line { stroke-dasharray: 0 7; stroke-linecap: round; }
+.rl-inf line { stroke-linecap: round; }
+.rl-dot {
+  stroke: var(--surface);
+  stroke-width: 2.5px;
+}
+.MafsView .rl-angle-fill { fill: var(--a); stroke: none; opacity: 0.16; }
+.MafsView .rl-angle-arc {
+  fill: none;
+  stroke: var(--a);
+  stroke-width: 2.25px;
+  stroke-linecap: round;
+}
+
+/* ---------- Etiquetas ---------- */
+.fig-chip-box {
+  overflow: visible;
+  pointer-events: none;
+}
+.fig-chip {
+  position: absolute;
+  padding: 1px 8px 2px;
+  border: 1.5px solid color-mix(in srgb, var(--chip) 45%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--chip) 13%, var(--surface));
+  color: var(--chip);
   font-family: var(--font);
   font-size: 13px;
   font-weight: 800;
+  line-height: 1.35;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ---------- Alça arrastável: miolo branco, borda colorida, anel pontilhado ---------- */
+.MafsView .mafs-movable-point .mafs-movable-point-point {
+  r: 7px;
+  fill: var(--surface);
+  stroke: var(--movable-point-color);
+  stroke-width: 3.5px;
+}
+.MafsView .mafs-movable-point .mafs-movable-point-ring {
+  r: 15px;
+  fill: none;
+  stroke: var(--movable-point-color);
+  stroke-width: 2px;
+  stroke-dasharray: 2 4.3;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rl-spin 9s linear infinite;
+}
+.MafsView .mafs-movable-point:hover .mafs-movable-point-point,
+.MafsView .mafs-movable-point:focus-visible .mafs-movable-point-point { r: 8px; }
+.MafsView .mafs-movable-point:hover .mafs-movable-point-ring,
+.MafsView .mafs-movable-point:focus-visible .mafs-movable-point-ring { r: 17px; }
+.MafsView .mafs-movable-point.mafs-movable-point-dragging .mafs-movable-point-ring {
+  r: 19px;
+  fill: var(--movable-point-color);
+  fill-opacity: 0.16;
+  stroke-dasharray: none;
+  animation: none;
+}
+.MafsView .mafs-movable-point:focus-visible .mafs-movable-point-focus {
+  r: 23px;
+  stroke-width: 2.5px;
+}
+@keyframes rl-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .MafsView .mafs-movable-point .mafs-movable-point-ring { animation: none; }
+}
+
+/* ---------- Botões sobre a figura ---------- */
+.recenter-btn {
+  position: absolute;
+  z-index: 5;
+  left: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--c);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--c) 30%, var(--border)), var(--shadow);
+  cursor: pointer;
+}
+.recenter-btn:hover { background: var(--c-soft); }
+.recenter-btn:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--c), var(--focus); }
+.recenter-btn:active { transform: scale(0.94); }
+
+/* ---------- 3D ---------- */
+.scene3d {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 35%, var(--fig-bg), color-mix(in srgb, var(--c) 10%, var(--surface)));
+}
+.label3d {
+  padding: 1px 8px 2px;
+  border: 1.5px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, currentColor 13%, var(--surface));
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
-  text-shadow: 0 0 3px var(--surface), 0 0 3px var(--surface), 0 0 2px var(--surface);
+}
+.label3d.axis-name {
+  padding: 0 7px 1px;
+  font-style: italic;
 }
 
-.graph-overlay {
+/* Vistas: pílula de chips no canto de baixo */
+.view-chips {
   position: absolute;
   z-index: 5;
+  left: 10px;
+  bottom: 10px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--c) 25%, var(--border)), var(--shadow);
 }
-.graph-overlay.tr { top: 10px; right: 10px; }
-.graph-overlay.tl { top: 10px; left: 10px; }
-.graph-overlay.bl { bottom: 10px; left: 10px; }
-.graph-overlay.br { bottom: 10px; right: 10px; }
-.graph-overlay .btn {
-  min-height: 36px;
-  padding: 4px 10px;
-  border-width: 2px;
-  border-bottom-width: 3px;
-  border-radius: 11px;
-  font-size: 0.85rem;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
+.view-chips button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
 }
-.graph-overlay .btn[aria-pressed="true"] { --b-text: var(--c); border-color: color-mix(in srgb, var(--c) 50%, var(--border)); }
-.frame-btn .icon { display: none; }
-.views-full { display: flex; flex-wrap: wrap; gap: 6px; }
-.views-compact { display: none; position: relative; }
+.view-chips button[aria-pressed="true"] {
+  background: var(--c);
+  color: var(--on-c);
+}
+.view-chips button:focus-visible { outline: none; box-shadow: var(--focus); }
+.view-chips .compact { display: none; }
+
 .view-menu {
   position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
+  bottom: calc(100% + 8px);
+  left: 0;
   z-index: 8;
   min-width: 170px;
   padding: 4px;
   border: 2px solid var(--border);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--shadow-lg);
 }
@@ -66,43 +245,47 @@
   width: 100%;
   min-height: var(--tap);
   padding: 0 12px;
-  border: 0;
-  border-radius: 10px;
-  background: none;
-  font-weight: 750;
-  text-align: left;
-}
-.view-menu button[aria-checked="true"] { color: var(--c); }
-.view-menu button:active { background: var(--surface-2); }
-
-@container (max-width: 560px) {
-  .views-full { display: none; }
-  .views-compact { display: block; }
-  .frame-btn { justify-content: center; width: 38px; padding: 0 !important; }
-  .frame-btn .icon { display: block; }
-  .frame-label { display: none; }
-}
-
-/* Legenda / leitura sobre o gráfico */
-.graph-legend {
-  padding: 6px 10px;
-  border: 2px solid var(--border);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  color: var(--text);
+}
+.view-menu button[aria-checked="true"] { color: var(--c); background: var(--c-soft); }
+
+@container (max-width: 520px) {
+  .view-chips .full { display: none; }
+  .view-chips .compact { display: inline-flex; }
+}
+
+/* ---------- Legenda / leitura sobre o gráfico ---------- */
+.graph-overlay {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.graph-overlay.tr { top: 10px; right: 10px; }
+.graph-overlay.tl { top: 10px; left: 10px; }
+.graph-overlay.br { bottom: 10px; right: 10px; }
+.graph-legend {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 0 0 1.5px var(--border);
   font-size: 0.85rem;
   font-weight: 750;
   pointer-events: none;
 }
 
-/* Ponto de palpite */
+/* Ponto de palpite (no texto) */
 .ghost-dot {
   display: inline-grid;
   place-items: center;
   width: 22px;
   height: 22px;
+  border: 2.5px solid var(--text-3);
   border-radius: 50%;
-  background: var(--text-3);
-  color: var(--surface);
-  font-size: 0.8rem;
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: 0.75rem;
   vertical-align: middle;
 }

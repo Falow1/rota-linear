@@ -85,7 +85,7 @@
 
 .course-progress { max-width: 520px; }
 
-/* ---------- Cartões de trilha ---------- */
+/* ---------- Cartões de rota ---------- */
 
 .track-grid {
   display: grid;
@@ -133,7 +133,7 @@
 .tdot.concluida { background: var(--c); }
 .tdot.dominada { background: var(--gold); }
 
-/* ---------- Caminho da trilha ---------- */
+/* ---------- Caminho da rota ---------- */
 
 .track-banner {
   display: flex;

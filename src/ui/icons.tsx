@@ -68,6 +68,20 @@ const PATHS = {
   ),
   moon: <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />,
   frame: <path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15" />,
+  locate: (
+    <>
+      <circle cx="12" cy="12" r="6.5" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" />
+      <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" />
+    </>
+  ),
+  orbit: (
+    <>
+      <ellipse cx="12" cy="12" rx="9.5" ry="4.2" transform="rotate(-24 12 12)" />
+      <circle cx="12" cy="12" r="2.6" fill="currentColor" />
+      <circle cx="19.6" cy="7.6" r="1.4" fill="currentColor" stroke="none" />
+    </>
+  ),
   cube: (
     <>
       <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z" />
@@ -161,72 +175,98 @@ export function Icon({ name, size = 18, fill = false, stroke = 2 }: { name: Icon
   );
 }
 
-/** Ícone de cada trilha, desenhado no mesmo estilo de traço. A cor vem de `color` (normalmente a cor da trilha). */
+/**
+ * Ícone de cada rota: formas cheias em dois tons (o tom claro é a mesma cor com transparência).
+ * A cor vem de `currentColor` (normalmente a cor da rota ou branco sobre ela).
+ */
+const SOFT = { fill: "currentColor", fillOpacity: 0.28, stroke: "none" } as const;
+const SOLID = { fill: "currentColor", stroke: "none" } as const;
+
 const TRACK_ICONS: Record<TrackId, ReactNode> = {
+  // dois vetores saindo de um ponto e o paralelogramo entre eles
   vetores: (
     <>
-      <path d="M8 32 25 15" />
-      <polygon points="30,10 28.2,18.1 21.9,11.8" className="fill" />
-      <path d="M8 32h11" opacity="0.45" />
-      <circle cx="8" cy="32" r="2.2" className="fill" />
+      <polygon points="8,32 26,27 33,9 15,14" {...SOFT} />
+      <path d="M8 32 22.5 28" />
+      <path d="M8 32 13.4 18" />
+      <polygon points="27.5,26.6 20.6,31.1 19.3,24.8" {...SOLID} />
+      <polygon points="15,13.6 16.5,21.5 10.4,19.3" {...SOLID} />
+      <circle cx="8" cy="32" r="3.2" {...SOLID} />
     </>
   ),
+  // plano inclinado atravessado por uma reta, com o vetor normal
   "retas-planos": (
     <>
-      <polygon points="5,26 22,33 35,22 18,15" className="soft" />
-      <path d="M20 4v13" />
-      <path d="M20 29v7" strokeDasharray="2.5 3" opacity="0.6" />
-      <circle cx="20" cy="23" r="2.4" className="fill" />
+      <polygon points="4,27 17,33 36,24 23,18" {...SOFT} />
+      <path d="M3 13 37 31" strokeDasharray="0.1 5" />
+      <path d="M20 25.5V9" />
+      <polygon points="20,4 24,11 16,11" {...SOLID} />
+      <circle cx="20" cy="25.5" r="3" {...SOLID} />
     </>
   ),
+  // parábola com o foco e a diretriz
   conicas: (
     <>
-      <ellipse cx="20" cy="20" rx="15" ry="8.5" transform="rotate(-25 20 20)" />
-      <circle cx="12.5" cy="23.5" r="2" className="fill" />
-      <circle cx="27.5" cy="16.5" r="2" className="fill" />
+      <path d="M6 7c2.5 16 8 22 14 22s11.5-6 14-22" />
+      <path d="M6 35h28" strokeDasharray="0.1 5" />
+      <circle cx="20" cy="20" r="3.2" {...SOLID} />
+      <path d="M20 29v6" opacity="0.5" />
     </>
   ),
+  // hiperboloide de uma folha (ampulheta)
   quadricas: (
     <>
-      <ellipse cx="20" cy="11" rx="13" ry="4.5" className="soft" />
-      <path d="M7 11c1.5 13 6 21 13 21s11.5-8 13-21" />
-      <path d="M11 22c2.5 1.6 5.6 2.4 9 2.4s6.5-.8 9-2.4" opacity="0.5" />
+      <ellipse cx="20" cy="8.5" rx="12" ry="4" {...SOFT} />
+      <ellipse cx="20" cy="8.5" rx="12" ry="4" />
+      <path d="M8 8.5c4 7 4 16 0 23M32 8.5c-4 7-4 16 0 23" />
+      <path d="M8 31.5c2.5 2.6 21.5 2.6 24 0" />
+      <ellipse cx="20" cy="20" rx="6.5" ry="2.2" opacity="0.45" />
     </>
   ),
+  // três retas que se encontram num ponto: a solução
   sistemas: (
     <>
-      <path d="M12 7H8v26h4M28 7h4v26h-4" />
-      {[14, 20, 26].flatMap((y) => [15, 20, 25].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.7" className="fill" />))}
+      <path d="M4 30 36 12M6 8l28 26M20 4v32" opacity="0.55" />
+      <circle cx="20" cy="21" r="6.5" {...SOFT} />
+      <circle cx="20" cy="21" r="3.2" {...SOLID} />
     </>
   ),
+  // canto de um cubo com os três vetores da base
   espacos: (
     <>
-      <path d="M8 30l18-6M11 21l18-6M14 12l18-6" />
-      <path d="M8 30l6-18M17 27l6-18M26 24l6-18" opacity="0.55" />
-      <circle cx="8" cy="30" r="2" className="fill" />
+      <polygon points="12,28 12,12 26,6 26,22" {...SOFT} />
+      <path d="M12 28h17.5M12 28V11.5M12 28l-6 6" />
+      <polygon points="34,28 28,31.5 28,24.5" {...SOLID} />
+      <polygon points="12,7 15.5,13 8.5,13" {...SOLID} />
+      <polygon points="3.5,36.5 5,29.6 10.4,35" {...SOLID} />
+      <circle cx="12" cy="28" r="2.6" {...SOLID} />
     </>
   ),
+  // quadrado girando, com o rastro da rotação
   transformacoes: (
     <>
-      <rect x="5" y="20" width="11" height="11" strokeDasharray="2.5 2.5" opacity="0.55" />
-      <polygon points="21,31 32,31 36,19 25,19" className="soft" />
-      <path d="M10 15c3-6 10-8 15-5" />
-      <path d="m22 7 3.5 3-3.8 2.5" />
+      <rect x="9" y="9" width="16" height="16" rx="2.5" opacity="0.45" strokeDasharray="0.1 4.5" />
+      <rect x="15" y="15" width="16" height="16" rx="2.5" transform="rotate(-24 23 23)" {...SOFT} />
+      <rect x="15" y="15" width="16" height="16" rx="2.5" transform="rotate(-24 23 23)" />
+      <path d="M8 31a13 13 0 0 1-3.2-12" />
+      <polygon points="3.6,15.6 8,20.4 1.9,21.4" {...SOLID} />
     </>
   ),
+  // elipse com os dois eixos principais (as direções dos autovetores)
   autovalores: (
     <>
-      <path d="M4 34 36 6" strokeDasharray="2.5 3" opacity="0.5" />
-      <path d="M11 27.9 22.4 18" />
-      <polygon points="28,13.1 24.4,21.4 19.7,16" className="fill" />
-      <circle cx="11" cy="27.9" r="2" className="fill" />
+      <ellipse cx="20" cy="20" rx="16" ry="8" transform="rotate(-35 20 20)" {...SOFT} />
+      <path d="M20 20 31 12.3M20 20l-4.6-6.6" />
+      <polygon points="35.5,9.1 30.6,15.9 27.8,11.9" {...SOLID} />
+      <polygon points="13,10.2 18.6,13.2 14.3,16.2" {...SOLID} />
+      <circle cx="20" cy="20" r="3" {...SOLID} />
     </>
   ),
 };
 
 export function TrackIcon({ id, size = 40 }: { id: TrackId; size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="track-icon">
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="track-icon">
       {TRACK_ICONS[id]}
     </svg>
   );

@@ -31,7 +31,7 @@ function SignLoop() {
       y={[-1, 3]}
       label="v girando em volta de u"
       overlay={
-        <div className="graph-overlay bl">
+        <div className="graph-overlay tl">
           <span className="graph-legend" style={{ color }}>
             u · v {s}
           </span>

@@ -1,6 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { fmt } from "../math/format";
-import { sliderGeometry, stepValue } from "./sliderGeometry";
+import { sliderGeometry } from "./sliderGeometry";
 import { Tex } from "./Tex";
 
 /** Campo numérico que aceita vírgula ou ponto e só confirma valores válidos. */
@@ -77,49 +77,8 @@ export function NumberField({
 const OBJ = /\bobj[1-6]\b/;
 const sliderPos = (f: number) => `calc(var(--th) / 2 + (100% - var(--th)) * ${f.toFixed(4)})`;
 
-/** Botão − ou + do slider: um passo por toque; segurando, repete (espera 400 ms, depois a cada 60 ms). */
-function StepButton({ dir, value, step, min, max, onChange, name }: { dir: 1 | -1; value: number; step: number; min: number; max: number; onChange: (v: number) => void; name: string }) {
-  const latest = useRef(value);
-  latest.current = value;
-  const timer = useRef(0);
-  const stop = () => {
-    window.clearTimeout(timer.current);
-    window.clearInterval(timer.current);
-  };
-  useEffect(() => stop, []);
-  const bump = () => {
-    latest.current = stepValue(latest.current, dir, step, min, max);
-    onChange(latest.current);
-  };
-  return (
-    <button
-      type="button"
-      className="step-btn"
-      aria-label={`${dir < 0 ? "Diminuir" : "Aumentar"} ${name}`}
-      onPointerDown={(e) => {
-        if (e.button !== 0) return;
-        e.preventDefault();
-        bump();
-        stop();
-        timer.current = window.setTimeout(() => {
-          timer.current = window.setInterval(bump, 60);
-        }, 400);
-      }}
-      onPointerUp={stop}
-      onPointerLeave={stop}
-      onPointerCancel={stop}
-      onClick={(e) => {
-        if (e.detail === 0) bump(); // teclado ou leitor de tela (o toque já agiu no pointerdown)
-      }}
-      onContextMenu={(e) => e.preventDefault()}
-    >
-      {dir < 0 ? "−" : "+"}
-    </button>
-  );
-}
-
 /**
- * Slider com rótulo (texto ou LaTeX) e campo numérico ao lado.
+ * Controle de valor: cabeçalho com o rótulo (texto ou LaTeX) e o valor numa pílula editável; embaixo, o trilho.
  * A cor segue o objeto que o parâmetro controla (`color`, ou a classe objN do rótulo); senão, a cor de destaque.
  * Se o intervalo cruza o zero, o preenchimento vai do zero até a bolinha e o zero ganha uma marca.
  */
@@ -171,15 +130,26 @@ export function Slider({
     ...(g.z !== null ? { "--zero": sliderPos(g.z) } : {}),
   } as CSSProperties;
 
+  // Pontinhos nas marcas inteiras (ou a cada 2, 5…), para dar noção de escala.
+  const span = max - min;
+  const tickStep = [1, 2, 5, 10].find((k) => span / k <= 12) ?? 20;
+  const ticks: number[] = [];
+  for (let k = Math.ceil(min / tickStep) * tickStep; k <= max + 1e-9; k += tickStep) ticks.push(k);
+
   return (
-    <div className="control-row">
-      <label htmlFor={id} className={className}>
-        {tex ? <Tex>{tex}</Tex> : label}
-      </label>
-      <div className="slider" style={style} data-dragging={dragging ? "" : undefined}>
+    <div className="dial" style={style} data-dragging={dragging ? "" : undefined}>
+      <div className="dial-head">
+        <label htmlFor={id} className={className}>
+          {tex ? <Tex>{tex}</Tex> : label}
+        </label>
+        <NumberField value={value} onChange={onChange} step={step} label={name} className="dial-value" />
+      </div>
+      <div className="slider">
         <span className="slider-track" />
         <span className="slider-fill" />
-        {g.z !== null && <span className="slider-zero" />}
+        {ticks.map((k) => (
+          <span key={k} className={k === 0 ? "slider-tick zero" : "slider-tick"} style={{ left: sliderPos((k - min) / span) }} />
+        ))}
         <input
           id={id}
           type="range"
@@ -194,11 +164,6 @@ export function Slider({
         <output className="slider-bubble" htmlFor={id} aria-hidden="true">
           {fmt(value)}
         </output>
-      </div>
-      <div className="slider-num">
-        <StepButton dir={-1} value={value} step={step} min={min} max={max} onChange={onChange} name={name} />
-        <NumberField value={value} onChange={onChange} step={step} label={name} />
-        <StepButton dir={1} value={value} step={step} min={min} max={max} onChange={onChange} name={name} />
       </div>
     </div>
   );

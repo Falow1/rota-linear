@@ -26,7 +26,9 @@
 .stage {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(360px, 1fr);
+  /* Cartão à esquerda (lê-se primeiro), figura à direita */
+  grid-template-columns: minmax(360px, 1fr) minmax(0, 1.3fr);
+  grid-template-areas: "panel fig";
   gap: 16px;
   width: 100%;
   max-width: 1280px;
@@ -39,17 +41,20 @@
 @keyframes card-in {
   from { opacity: 0; transform: translateX(24px); }
 }
-.stage.no-fig { grid-template-columns: minmax(0, 720px); justify-content: center; }
+.stage.no-fig { grid-template-columns: minmax(0, 720px); grid-template-areas: "panel"; justify-content: center; }
 
 .stage-fig {
+  grid-area: fig;
   position: relative;
   min-height: 0;
   border-radius: 26px;
-  background: var(--surface);
-  border: 2px solid var(--border);
+  background: var(--fig-bg);
+  border: 2px solid color-mix(in srgb, var(--c) 22%, var(--border));
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 .stage-panel {
+  grid-area: panel;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -392,7 +397,7 @@
 /* Celular deitado: lado a lado, compacto */
 @media (max-height: 499px) {
   .player-top { height: 48px; }
-  .stage { height: calc(100dvh - 48px); gap: 10px; padding-bottom: 10px; grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr); }
+  .stage { height: calc(100dvh - 48px); gap: 10px; padding-bottom: 10px; grid-template-columns: minmax(300px, 1fr) minmax(0, 1fr); }
   .panel-inner { padding: 14px 16px; }
   .card-title { font-size: 1.15rem; }
   .actionbar { padding: 8px 12px; }

@@ -81,11 +81,11 @@ function Finish({ meta, firstTry, total }: { meta: LessonMeta; firstTry: number;
             </Link>
           )}
           <div className="row wrap" style={{ justifyContent: "center" }}>
-            <Link to={`/trilha/${meta.track}`} className="btn ghost small">
-              Voltar à trilha
+            <Link to={`/rota/${meta.track}`} className="btn ghost small">
+              Voltar à rota
             </Link>
             <a href={livreUrl(meta)} target="_blank" rel="noreferrer" className="btn ghost small">
-              Explorar livre <Icon name="external" size={15} />
+              Abrir no Equação Viva <Icon name="external" size={15} />
             </a>
           </div>
         </div>
@@ -128,8 +128,8 @@ export default function LessonPage() {
       <div className={`page narrow center-page t-${track.id}`}>
         <h1>Lição em construção</h1>
         <p className="muted">O conteúdo de “{meta.title}” ainda está sendo preparado.</p>
-        <Link to={`/trilha/${track.id}`} className="btn primary mt-16">
-          Voltar à trilha
+        <Link to={`/rota/${track.id}`} className="btn primary mt-16">
+          Voltar à rota
         </Link>
       </div>
     );
@@ -153,7 +153,7 @@ export default function LessonPage() {
   return (
     <div className={`player t-${track.id}`}>
       <PlayerTop
-        exitTo={`/trilha/${track.id}`}
+        exitTo={`/rota/${track.id}`}
         value={finished ? 1 : i / cards.length}
         count={finished ? undefined : `${i + 1}/${cards.length}`}
         label={`Progresso na lição ${meta.title}`}

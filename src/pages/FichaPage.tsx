@@ -4,7 +4,7 @@ import { Icon } from "../ui/icons";
 import { Tex } from "../ui/Tex";
 import { NotFound } from "./NotFound";
 
-/** Ficha de fórmulas de uma trilha (ou de todas, em /ficha/todas), pensada para imprimir. */
+/** Ficha de fórmulas de uma rota (ou de todas, em /ficha/todas), pensada para imprimir. */
 export default function FichaPage() {
   const { trackId = "" } = useParams();
   const all = trackId === "todas";
@@ -19,7 +19,7 @@ export default function FichaPage() {
         <span className="grow" />
         {!all && (
           <Link to="/ficha/todas" className="btn ghost small">
-            Todas as trilhas
+            Todas as rotas
           </Link>
         )}
         <button type="button" className="btn soft small" onClick={() => window.print()}>

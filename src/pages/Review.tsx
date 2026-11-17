@@ -11,7 +11,7 @@ export function Review() {
   return (
     <div className="page">
       <h1>Revisão</h1>
-      <p className="muted lead">Exercícios novos do que você já estudou e as fórmulas de cada trilha num lugar só.</p>
+      <p className="muted lead">Exercícios novos do que você já estudou e as fórmulas de cada rota num lugar só.</p>
 
       <section className="review-hero mt-16">
         <span className="review-ico" aria-hidden="true">

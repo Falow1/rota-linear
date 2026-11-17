@@ -12,7 +12,7 @@ export type V3 = [number, number, number];
 
 /* ---------- Cores a partir dos tokens CSS ---------- */
 
-const TOKENS = ["obj1", "obj2", "obj3", "obj4", "obj5", "obj6", "obj-muted", "text", "text-2", "text-3", "grid", "grid-strong", "axis", "surface"] as const;
+const TOKENS = ["obj1", "obj2", "obj3", "obj4", "obj5", "obj6", "obj-muted", "text", "text-2", "text-3", "grid", "grid-strong", "grid-dot", "axis", "surface"] as const;
 type Token = (typeof TOKENS)[number];
 
 function readColors(): Record<Token, string> {
@@ -40,10 +40,10 @@ export function useColor(name: string): string {
 
 /* ---------- Cena ---------- */
 
-type View = "iso" | "topo" | "frente" | "lado";
+type View = "inclinada" | "cima" | "frente" | "lado";
 const VIEWS: Record<View, V3> = {
-  iso: [8, -10, 7],
-  topo: [0, -0.01, 15],
+  inclinada: [9, -8, 6],
+  cima: [0, -0.01, 15],
   frente: [0, -15, 0.01],
   lado: [15, 0, 0.01],
 };
@@ -91,17 +91,17 @@ function ViewController({ view, nonce, R }: { view: View; nonce: number; R: numb
   return null;
 }
 
-const VIEW_LABEL: Record<View, string> = { iso: "Isométrica", topo: "Topo", frente: "Frente", lado: "Lado" };
+const VIEW_LABEL: Record<View, string> = { inclinada: "Inclinada", cima: "De cima", frente: "De frente", lado: "De lado" };
 
-/** No celular, as quatro vistas viram um botão só que abre um menu. */
+/** Figura estreita: as vistas viram um chip só, que abre um menu para cima. */
 function ViewMenu({ view, onPick }: { view: View; onPick: (v: View) => void }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   useDismiss(open, () => setOpen(false), box);
   return (
-    <div className="views-compact" ref={box}>
-      <button type="button" className="btn small" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <Icon name="cube" size={16} />
+    <div className="compact" ref={box} style={{ position: "relative" }}>
+      <button type="button" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <Icon name="orbit" size={16} />
         {VIEW_LABEL[view]}
         <Icon name="chevronDown" size={14} />
       </button>
@@ -135,7 +135,7 @@ const lowEndTouch = () =>
   ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) <= 4;
 
 export function Scene3D({ children, R = 4, overlay, label = "Cena 3D interativa", grid = true, axes = true }: { children: ReactNode; R?: number; overlay?: ReactNode; label?: string; grid?: boolean; axes?: boolean }) {
-  const [view, setView] = useState<View>("iso");
+  const [view, setView] = useState<View>("inclinada");
   const [nonce, setNonce] = useState(0);
   const dpr = useMemo<[number, number]>(() => [1, lowEndTouch() ? 1.5 : 2], []);
   const dist = R * 3.3;
@@ -143,10 +143,10 @@ export function Scene3D({ children, R = 4, overlay, label = "Cena 3D interativa"
     setView(v);
     setNonce((n) => n + 1);
   };
-  const init = VIEWS.iso;
+  const init = VIEWS.inclinada;
   const n0 = Math.hypot(...init);
   return (
-    <div style={{ position: "absolute", inset: 0 }} role="figure" aria-label={`${label}. Arraste para girar, use a roda para aproximar.`}>
+    <div className="scene3d" role="figure" aria-label={`${label}. Arraste para girar, use a roda para aproximar.`}>
       {/* frameloop "demand": só redesenha quando algo muda (girar, arrastar, mudar um valor), poupando bateria */}
       <Canvas
         camera={{ position: [(init[0] / n0) * dist, (init[1] / n0) * dist, (init[2] / n0) * dist], up: [0, 0, 1], fov: 38, near: 0.1, far: 200 }}
@@ -163,14 +163,13 @@ export function Scene3D({ children, R = 4, overlay, label = "Cena 3D interativa"
         <OrbitControls makeDefault enableDamping dampingFactor={0.12} minDistance={3} maxDistance={60} />
         <ViewController view={view} nonce={nonce} R={R} />
       </Canvas>
-      <div className="graph-overlay tr">
-        <div className="views-full">
-          {(Object.keys(VIEW_LABEL) as View[]).map((v) => (
-            <button key={v} type="button" className="btn small" aria-pressed={view === v} onClick={() => go(v)}>
-              {VIEW_LABEL[v]}
-            </button>
-          ))}
-        </div>
+      <div className="view-chips" role="group" aria-label="Ponto de vista">
+        {(Object.keys(VIEW_LABEL) as View[]).map((v) => (
+          <button key={v} type="button" className="full" aria-pressed={view === v} onClick={() => go(v)} title={v === "inclinada" ? "Volta à vista inicial" : undefined}>
+            {v === "inclinada" && <Icon name="orbit" size={15} />}
+            {VIEW_LABEL[v]}
+          </button>
+        ))}
         <ViewMenu view={view} onPick={go} />
       </div>
       {overlay}
@@ -178,38 +177,68 @@ export function Scene3D({ children, R = 4, overlay, label = "Cena 3D interativa"
   );
 }
 
+/** Piso: placa translúcida no plano xy com um ponto em cada inteiro. */
 function GridXY({ R }: { R: number }) {
-  const col = useColor("grid-strong");
-  const pts = useMemo(() => {
-    const p: V3[] = [];
-    for (let i = -R; i <= R; i++) {
-      if (i === 0) continue;
-      p.push([i, -R, 0], [i, R, 0], [-R, i, 0], [R, i, 0]);
-    }
-    return p;
+  const dot = useColor("grid-dot");
+  const floor = useColor("grid");
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const n = (2 * R + 1) ** 2;
+  useLayoutEffect(() => {
+    const m = ref.current;
+    if (!m) return;
+    const o = new THREE.Object3D();
+    let k = 0;
+    for (let i = -R; i <= R; i++)
+      for (let j = -R; j <= R; j++) {
+        o.position.set(i, j, 0.002);
+        o.updateMatrix();
+        m.setMatrixAt(k++, o.matrix);
+      }
+    m.instanceMatrix.needsUpdate = true;
   }, [R]);
-  return <Line points={pts} segments color={col} lineWidth={1} transparent opacity={0.8} />;
-}
-
-function Axes3D({ R }: { R: number }) {
-  const col = useColor("axis");
-  const txt = useColor("text-2");
-  const L = R + 0.8;
-  const axes: { d: V3; name: string }[] = [
-    { d: [1, 0, 0], name: "x" },
-    { d: [0, 1, 0], name: "y" },
-    { d: [0, 0, 1], name: "z" },
-  ];
   return (
     <>
-      {axes.map(({ d, name }) => (
+      <mesh position={[0, 0, -0.004]}>
+        <planeGeometry args={[2 * R + 0.6, 2 * R + 0.6]} />
+        <meshBasicMaterial color={floor} transparent opacity={0.45} side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+      <instancedMesh ref={ref} args={[undefined, undefined, n]}>
+        <circleGeometry args={[0.045, 12]} />
+        <meshBasicMaterial color={dot} side={THREE.DoubleSide} />
+      </instancedMesh>
+    </>
+  );
+}
+
+const AXES: { d: V3; name: string }[] = [
+  { d: [1, 0, 0], name: "x" },
+  { d: [0, 1, 0], name: "y" },
+  { d: [0, 0, 1], name: "z" },
+];
+
+/** Eixos: semieixo positivo cheio, negativo apagado, bolinhas nos inteiros e o nome na ponta. */
+function Axes3D({ R }: { R: number }) {
+  const col = useColor("axis");
+  const L = R + 0.6;
+  const ticks = useMemo(() => {
+    const out: V3[] = [];
+    for (const { d } of AXES) for (let k = 1; k <= R; k++) out.push([d[0] * k, d[1] * k, d[2] * k]);
+    return out;
+  }, [R]);
+  return (
+    <>
+      {AXES.map(({ d, name }) => (
         <group key={name}>
-          <Arrow3D from={[-d[0] * L, -d[1] * L, -d[2] * L]} to={[d[0] * L, d[1] * L, d[2] * L]} color={col} width={1.5} head={0.22} />
-          <Label3D at={[d[0] * (L + 0.35), d[1] * (L + 0.35), d[2] * (L + 0.35)]} text={name} color={txt} size={15} />
-          {[-R, -R / 2, R / 2, R].map((k) =>
-            Number.isInteger(k) ? <Label3D key={k} at={[d[0] * k, d[1] * k, d[2] * k]} text={String(k).replace("-", "−")} color={txt} size={12} weight={450} offset={[6, 6]} /> : null,
-          )}
+          <Line points={[[0, 0, 0], [d[0] * L, d[1] * L, d[2] * L]]} color={col} lineWidth={2} />
+          <Line points={[[0, 0, 0], [-d[0] * L, -d[1] * L, -d[2] * L]]} color={col} lineWidth={1.25} transparent opacity={0.35} />
+          <Label3D at={[d[0] * (L + 0.3), d[1] * (L + 0.3), d[2] * (L + 0.3)]} text={name} color="axis" className="axis-name" />
         </group>
+      ))}
+      {ticks.map((p, i) => (
+        <mesh key={i} position={p}>
+          <sphereGeometry args={[0.05, 10, 8]} />
+          <meshBasicMaterial color={col} />
+        </mesh>
       ))}
     </>
   );
@@ -217,7 +246,7 @@ function Axes3D({ R }: { R: number }) {
 
 /* ---------- Primitivas ---------- */
 
-export function Label3D({ at, text, color = "text", size = 14, weight = 650, offset = [0, 0] }: { at: V3; text: string; color?: string; size?: number; weight?: number; offset?: [number, number] }) {
+export function Label3D({ at, text, color = "text", offset = [0, 0], className }: { at: V3; text: string; color?: string; size?: number; weight?: number; offset?: [number, number]; className?: string }) {
   // Rótulo em DOM puro, reposicionado a cada quadro (sem criar raízes React por rótulo).
   const c = useColor(color);
   const { gl, camera, size: vp, invalidate } = useThree();
@@ -232,10 +261,10 @@ export function Label3D({ at, text, color = "text", size = 14, weight = 650, off
     return () => el.remove();
   }, [gl, el]);
   useLayoutEffect(() => {
-    el.className = "label3d";
+    el.className = className ? `label3d ${className}` : "label3d";
     el.textContent = text;
-    Object.assign(el.style, { position: "absolute", left: "0", top: "0", color: c, fontSize: `${size}px`, fontWeight: String(weight), pointerEvents: "none", willChange: "transform" });
-  }, [el, text, c, size, weight]);
+    Object.assign(el.style, { position: "absolute", left: "0", top: "0", color: c, pointerEvents: "none", willChange: "transform" });
+  }, [el, text, c, className]);
   useFrame(() => {
     const p = pos.current;
     if (p.some((x) => !Number.isFinite(x))) {
@@ -255,25 +284,45 @@ export function Label3D({ at, text, color = "text", size = 14, weight = 650, off
   return null;
 }
 
-/** Seta 3D: linha + cone na ponta. */
-export function Arrow3D({ from = [0, 0, 0], to, color = "obj1", width = 3, head = 0.3, label, dashed = false, opacity = 1 }: { from?: V3; to: V3; color?: string; width?: number; head?: number; label?: string; dashed?: boolean; opacity?: number }) {
+/**
+ * Seta 3D sólida: tubo, ponta larga e uma esfera onde a seta começa. `width` é a espessura relativa (3 = padrão).
+ * Com `dashed`, o tubo vira uma linha pontilhada.
+ */
+export function Arrow3D({ from = [0, 0, 0], to, color = "obj1", width = 3, head = 0.34, label, dashed = false, opacity = 1 }: { from?: V3; to: V3; color?: string; width?: number; head?: number; label?: string; dashed?: boolean; opacity?: number }) {
   const c = useColor(color);
   const d = new THREE.Vector3(to[0] - from[0], to[1] - from[1], to[2] - from[2]);
   const len = d.length();
   if (!Number.isFinite(len)) return null;
   if (len < 1e-9) return label ? <Label3D at={to} text={label} color={color} /> : null;
   const dir = d.clone().normalize();
-  const h = Math.min(head, len * 0.4);
-  const base = new THREE.Vector3(...to).addScaledVector(dir, -h);
+  const r = 0.018 * width;
+  const h = Math.min(head, len * 0.45);
+  const shaft = Math.max(0, len - h * 0.9);
   const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-  const center = new THREE.Vector3(...to).addScaledVector(dir, -h / 2);
-  const lab = new THREE.Vector3(...to).addScaledVector(dir, 0.35);
+  const mid = new THREE.Vector3(...from).addScaledVector(dir, shaft / 2);
+  const headC = new THREE.Vector3(...to).addScaledVector(dir, -h / 2);
+  const base = new THREE.Vector3(...to).addScaledVector(dir, -h);
+  const lab = new THREE.Vector3(...to).addScaledVector(dir, 0.4);
+  const mat = <meshStandardMaterial color={c} roughness={0.4} metalness={0.05} transparent={opacity < 1} opacity={opacity} />;
   return (
     <>
-      <Line points={[from, [base.x, base.y, base.z]]} color={c} lineWidth={width} dashed={dashed} dashSize={0.15} gapSize={0.1} transparent={opacity < 1} opacity={opacity} />
-      <mesh position={center} quaternion={q}>
-        <coneGeometry args={[h * 0.42, h, 18]} />
-        <meshStandardMaterial color={c} transparent={opacity < 1} opacity={opacity} />
+      {dashed ? (
+        <Line points={[from, [base.x, base.y, base.z]]} color={c} lineWidth={width} dashed dashSize={0.06} gapSize={0.12} transparent={opacity < 1} opacity={opacity} />
+      ) : (
+        <>
+          <mesh position={mid} quaternion={q}>
+            <cylinderGeometry args={[r, r, shaft, 14]} />
+            {mat}
+          </mesh>
+          <mesh position={from}>
+            <sphereGeometry args={[r * 1.9, 14, 10]} />
+            {mat}
+          </mesh>
+        </>
+      )}
+      <mesh position={headC} quaternion={q}>
+        <coneGeometry args={[Math.max(h * 0.4, r * 3), h, 20]} />
+        {mat}
       </mesh>
       {label && <Label3D at={[lab.x, lab.y, lab.z]} text={label} color={color} />}
     </>

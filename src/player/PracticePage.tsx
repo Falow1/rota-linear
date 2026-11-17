@@ -63,7 +63,7 @@ export default function PracticePage({ mode }: { mode: Mode }) {
 
   if ((mode === "licao" && !lesson) || (mode === "desafio" && !track)) return <NotFound />;
 
-  const exitTo = mode === "revisao" ? "/revisao" : `/trilha/${track!.id}`;
+  const exitTo = mode === "revisao" ? "/revisao" : `/rota/${track!.id}`;
   const theme = track ? `t-${track.id}` : "";
   const label = mode === "licao" ? `Prática: ${lesson!.title}` : mode === "desafio" ? `Desafio: ${track!.title}` : "Revisão misturada";
 
@@ -108,7 +108,7 @@ export default function PracticePage({ mode }: { mode: Mode }) {
     const sub =
       mode === "licao"
         ? mastered
-          ? "A lição ganhou a estrela no caminho da trilha."
+          ? "A lição ganhou a estrela no caminho da rota."
           : `Acerte ${MASTERY} de ${n} de primeira para dominar a lição.`
         : mode === "desafio"
           ? "Os erros entram na sua revisão misturada."
@@ -164,7 +164,7 @@ export default function PracticePage({ mode }: { mode: Mode }) {
                 </Link>
               )}
               <Link to={exitTo} className="btn ghost">
-                {mode === "revisao" ? "Voltar à revisão" : "Voltar à trilha"}
+                {mode === "revisao" ? "Voltar à revisão" : "Voltar à rota"}
               </Link>
             </div>
           </div>

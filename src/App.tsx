@@ -51,8 +51,8 @@ export function App() {
           {/* key: trocar de lição (mesma rota, outro slug) recomeça a tela do zero. */}
           <Routes key={pathname}>
             <Route path="/" element={<Home />} />
-            <Route path="/trilhas" element={<Tracks />} />
-            <Route path="/trilha/:trackId" element={<TrackPage />} />
+            <Route path="/rotas" element={<Tracks />} />
+            <Route path="/rota/:trackId" element={<TrackPage />} />
             <Route path="/licao/:slug" element={<LessonPage />} />
             <Route path="/licao/:slug/pratica" element={<PracticePage mode="licao" />} />
             <Route path="/desafio/:trackId" element={<PracticePage mode="desafio" />} />

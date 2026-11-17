@@ -78,7 +78,7 @@ const lesson: LessonContent = {
         <>
           <p>
             No espaço existe um produto que dá um <b>vetor</b>: <b className="obj3">u × v</b>, perpendicular a <b className="obj1">u</b> e a{" "}
-            <b className="obj2">v</b> ao mesmo tempo. O tamanho dele é a <b>área</b> do paralelogramo laranja.
+            <b className="obj2">v</b> ao mesmo tempo. O tamanho dele é a <b>área</b> do paralelogramo sombreado.
           </p>
           <p>
             O sentido segue a <b>regra da mão direita</b>: dedos de u para v, polegar aponta para u × v. Gire a cena com o mouse ou o dedo.

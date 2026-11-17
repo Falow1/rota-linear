@@ -200,20 +200,23 @@
   display: flex;
   gap: 6px;
   padding: 6px max(8px, var(--safe-l)) 6px max(8px, var(--safe-r));
-  background: var(--surface-2);
-  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--c) 6%, var(--surface-2));
+  border-top: 1.5px solid color-mix(in srgb, var(--c) 25%, var(--border));
 }
 .keybar-keys { display: flex; gap: 6px; flex: 1; overflow-x: auto; scrollbar-width: none; }
 .keybar .key {
   flex: none;
-  min-width: 46px;
-  min-height: 42px;
-  padding: 0 10px;
-  border: 1px solid var(--border-strong);
-  border-bottom-width: 3px;
-  border-radius: 10px;
+  min-width: 48px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-pill);
   background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--border-strong);
+  color: var(--text);
   font-weight: 850;
   font-size: 1.05rem;
 }
+.keybar .key:active { background: var(--c-soft); }
 .keybar .key.wide { min-width: 64px; }
+.keybar > .key { background: var(--c); box-shadow: none; color: var(--on-c); }

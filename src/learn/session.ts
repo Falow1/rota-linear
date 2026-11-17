@@ -37,7 +37,7 @@ export function practiceSet(gens: Generator[], misses: Record<string, number>, r
   return chosen.sort((a, b) => a.level - b.level).map((gen) => ({ gen, seed: seedOf(r) }));
 }
 
-/** Desafio da trilha: exercícios de todas as lições, de preferência os de nível 2 e 3, misturados. */
+/** Desafio da rota: exercícios de todas as lições, de preferência os de nível 2 e 3, misturados. */
 export function challengeSet(gens: Generator[], r: Rng, n = 8): Item[] {
   const picked = weightedPick(r, gens, (g) => (g.level === 1 ? 0.5 : g.level), n);
   return shuffle(r, picked).map((gen) => ({ gen, seed: seedOf(r) }));

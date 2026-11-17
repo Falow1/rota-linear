@@ -18,7 +18,7 @@ export function Logo({ size = 34 }: { size?: number }) {
 
 const ITEMS: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: "/", label: "Início", icon: "home", end: true },
-  { to: "/trilhas", label: "Trilhas", icon: "route" },
+  { to: "/rotas", label: "Rotas", icon: "route" },
   { to: "/revisao", label: "Revisão", icon: "cards" },
   { to: "/sobre", label: "Sobre", icon: "info" },
 ];

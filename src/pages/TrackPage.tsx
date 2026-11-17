@@ -48,7 +48,7 @@ function LessonPopover({ l, st }: { l: LessonMeta; st: LessonStatus }) {
           <Icon name="target" size={18} /> Praticar
         </Link>
         <a href={livreUrl(l)} target="_blank" rel="noreferrer" className="btn ghost small">
-          Explorar livre no Equação Viva <Icon name="external" size={15} />
+          Abrir no Equação Viva <Icon name="external" size={15} />
         </a>
       </div>
     </div>
@@ -72,12 +72,12 @@ export function TrackPage() {
     <div className={`page t-${track.id}`}>
       <section className="track-banner">
         <div className="grow">
-          <span className="chip">Trilha {track.letter}</span>
+          <span className="chip">Rota {track.num}</span>
           <h1 className="mt-8">{track.title}</h1>
           <p className="muted">{track.summary}</p>
           <div className="row mt-16">
             <div className="grow">
-              <ProgressBar value={done / ls.length} label={`Progresso na trilha ${track.title}`} />
+              <ProgressBar value={done / ls.length} label={`Progresso na rota ${track.title}`} />
             </div>
             <span className="small-text tabular">
               <b>{done}</b>/{ls.length}
@@ -89,7 +89,7 @@ export function TrackPage() {
         </span>
       </section>
 
-      <ol className="path" aria-label="Lições da trilha">
+      <ol className="path" aria-label="Lições da rota">
         {ls.map((l, i) => {
           const st = statusOf(p, l.id);
           const isCur = l.id === current;
@@ -112,30 +112,30 @@ export function TrackPage() {
           );
         })}
         <li className="path-step" style={{ ["--dx" as string]: `${ZIG[ls.length % ZIG.length]}px` }}>
-          <Link to={`/ficha/${track.id}`} className="node special" aria-label="Ficha de fórmulas da trilha">
+          <Link to={`/ficha/${track.id}`} className="node special" aria-label="Ficha de fórmulas da rota">
             <Icon name="book" size={28} />
           </Link>
           <span className="node-label">Ficha de fórmulas</span>
         </li>
         <li className="path-step" style={{ ["--dx" as string]: `${ZIG[(ls.length + 1) % ZIG.length]}px` }}>
-          <Link to={`/desafio/${track.id}`} className={`node special trophy${done === ls.length ? " ready" : ""}`} aria-label="Desafio da trilha">
+          <Link to={`/desafio/${track.id}`} className={`node special trophy${done === ls.length ? " ready" : ""}`} aria-label="Desafio da rota">
             <Icon name="trophy" size={30} />
           </Link>
-          <span className="node-label">Desafio da trilha</span>
+          <span className="node-label">Desafio da rota</span>
           <span className="faint small-text">8 exercícios misturados</span>
         </li>
       </ol>
 
-      <nav className="track-nav" aria-label="Outras trilhas">
+      <nav className="track-nav" aria-label="Outras rotas">
         {prev ? (
-          <Link to={`/trilha/${prev.id}`} className="btn ghost">
+          <Link to={`/rota/${prev.id}`} className="btn ghost">
             <Icon name="arrowLeft" size={18} /> {prev.title}
           </Link>
         ) : (
           <span />
         )}
         {after && (
-          <Link to={`/trilha/${after.id}`} className="btn ghost">
+          <Link to={`/rota/${after.id}`} className="btn ghost">
             {after.title} <Icon name="arrowRight" size={18} />
           </Link>
         )}
