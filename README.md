@@ -10,9 +10,13 @@
   <img alt="Sem conta" src="https://img.shields.io/badge/sem%20conta%2C%20sem%20servidor-progresso%20no%20navegador-0d9488?style=flat-square">
 </p>
 
+<p align="center">
+  <a href="https://falow1.github.io/rota-linear/"><img alt="Abrir o Rota Linear" src="https://img.shields.io/badge/%E2%96%B6%20abrir%20o%20site-falow1.github.io%2Frota--linear-3b5bfd?style=for-the-badge"></a>
+</p>
+
 **Rota Linear** é um site para **aprender** Geometria Analítica e Álgebra Linear (GAAL) em lições curtas. Cada lição alterna explicação, gráfico interativo, uma tarefa com objetivo, uma previsão antes de ver a resposta e perguntas com correção na hora. Depois vem a prática com exercícios gerados, que nunca se repetem, e o progresso fica salvo no próprio navegador.
 
-São **8 rotas** e **29 lições**, de vetores até mínimos quadrados, com figuras 2D e 3D.
+São **8 rotas** e **29 lições**, de vetores até mínimos quadrados, com figuras 2D e 3D. Para usar, é só abrir **[falow1.github.io/rota-linear](https://falow1.github.io/rota-linear/)** no computador ou no celular.
 
 ---
 
@@ -77,7 +81,7 @@ npm test         # roda os testes
 npm run build    # gera a versão final em dist/
 ```
 
-O `dist/` é estático: pode ser servido por qualquer hospedagem de arquivos.
+O `dist/` é estático: pode ser servido por qualquer hospedagem de arquivos. Aqui, a cada push na `main`, o GitHub Actions roda os testes, gera o site e publica no [GitHub Pages](https://falow1.github.io/rota-linear/).
 
 ## Como o projeto está organizado
 
