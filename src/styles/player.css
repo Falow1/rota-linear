@@ -7,6 +7,8 @@
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
+  /* A entrada do cartão desliza da direita: sem isso, a página ganha rolagem lateral durante a animação. */
+  overflow-x: clip;
 }
 
 .player-top {
@@ -24,10 +26,15 @@
 .player-count { font-weight: 900; color: var(--text-3); min-width: 3.2em; text-align: right; }
 
 .stage {
-  flex: 1;
+  /* Base "auto" = a altura definida abaixo. Com "flex: 1" (base 0%) num pai de altura indefinida,
+     a base vira o conteúdo e o palco cresce, empurrando a ação para fora da tela. */
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   /* Cartão à esquerda (lê-se primeiro), figura à direita */
   grid-template-columns: minmax(360px, 1fr) minmax(0, 1.3fr);
+  /* Linha com a altura da tela: o texto longo rola dentro do cartão, e a ação fica sempre visível. */
+  grid-template-rows: minmax(0, 1fr);
   grid-template-areas: "panel fig";
   gap: 16px;
   width: 100%;
@@ -134,7 +141,7 @@
   color: var(--text-3);
 }
 .readout.hit { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
-.readout.hit .readout-ico { background: var(--ok); color: #fff; }
+.readout.hit .readout-ico { background: var(--ok); color: var(--on-ok); }
 
 /* Opções (múltipla escolha e palpites) */
 .options { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
@@ -172,9 +179,9 @@
 .option.picked { border-color: var(--c); background: var(--c-soft); }
 .option.picked .opt-key { border-color: var(--c); background: var(--c); color: var(--on-c); }
 .option.right { border-color: var(--ok); background: var(--ok-soft); }
-.option.right .opt-key { border-color: var(--ok); background: var(--ok); color: #fff; }
+.option.right .opt-key { border-color: var(--ok); background: var(--ok); color: var(--on-ok); }
 .option.wrong { border-color: var(--bad); background: var(--bad-soft); }
-.option.wrong .opt-key { border-color: var(--bad); background: var(--bad); color: #fff; }
+.option.wrong .opt-key { border-color: var(--bad); background: var(--bad); color: var(--on-bad); }
 
 /* Campos de resposta */
 .answer-zone { margin-top: 6px; }
@@ -297,7 +304,7 @@
   margin: 8px 0 14px;
   border-radius: 50%;
   background: var(--ok);
-  color: #fff;
+  color: var(--on-ok);
   box-shadow: 0 8px 0 var(--ok-edge);
   animation: badge-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1);
 }
@@ -323,7 +330,7 @@
 .result-list details { border-radius: 14px; background: var(--surface); border: 2px solid var(--border); }
 .result-list summary { display: flex; align-items: center; gap: 10px; padding: 10px 12px; cursor: pointer; list-style: none; font-weight: 800; }
 .result-list summary::-webkit-details-marker { display: none; }
-.res-ico { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; flex: none; color: #fff; }
+.res-ico { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; flex: none; color: var(--on-ok); }
 .result-list .ok .res-ico { background: var(--ok); }
 .result-list .bad .res-ico { background: var(--bad); }
 .res-sol { padding: 0 14px 12px; }
@@ -359,6 +366,7 @@
     flex-direction: column;
     gap: 0;
     height: auto;
+    min-height: auto;
     padding: 0;
   }
   .stage-fig {

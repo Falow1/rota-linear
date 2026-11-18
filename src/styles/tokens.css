@@ -66,7 +66,12 @@
   --radius-pill: 999px;
   --shadow: 0 1px 2px rgba(27, 31, 51, 0.06), 0 4px 14px rgba(27, 31, 51, 0.06);
   --shadow-lg: 0 10px 40px rgba(27, 31, 51, 0.16);
+  /* Texto e ícones sobre fundos coloridos (no escuro, as cores clareiam e o texto passa a ser escuro). */
   --on-c: #ffffff;
+  --on-brand: #ffffff;
+  --on-ok: #ffffff;
+  --on-bad: #ffffff;
+  --on-gold: #ffffff;
   --focus: 0 0 0 3px color-mix(in srgb, var(--c) 35%, transparent);
   --font: "Nunito Variable", "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --tap: 44px;
@@ -142,6 +147,12 @@
 
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.25);
   --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+  /* Branco sobre estas cores claras ficaria abaixo de 3,5:1; o quase-preto dá de 5:1 a 12:1. */
+  --on-c: #11131d;
+  --on-brand: #11131d;
+  --on-ok: #11131d;
+  --on-bad: #11131d;
+  --on-gold: #11131d;
   color-scheme: dark;
 }
 
@@ -150,7 +161,8 @@
 .t-retas-planos { --c: var(--t-retas-planos); --c-edge: var(--t-retas-planos-edge); --c-soft: var(--t-retas-planos-soft); }
 .t-conicas { --c: var(--t-conicas); --c-edge: var(--t-conicas-edge); --c-soft: var(--t-conicas-soft); }
 .t-quadricas { --c: var(--t-quadricas); --c-edge: var(--t-quadricas-edge); --c-soft: var(--t-quadricas-soft); }
-.t-sistemas { --c: var(--t-sistemas); --c-edge: var(--t-sistemas-edge); --c-soft: var(--t-sistemas-soft); }
+/* Laranja claro: branco ficaria em 2,8:1, então o texto é escuro também no tema claro. */
+.t-sistemas { --c: var(--t-sistemas); --c-edge: var(--t-sistemas-edge); --c-soft: var(--t-sistemas-soft); --on-c: #1b1f33; }
 .t-espacos { --c: var(--t-espacos); --c-edge: var(--t-espacos-edge); --c-soft: var(--t-espacos-soft); }
 .t-transformacoes { --c: var(--t-transformacoes); --c-edge: var(--t-transformacoes-edge); --c-soft: var(--t-transformacoes-soft); }
 .t-autovalores { --c: var(--t-autovalores); --c-edge: var(--t-autovalores-edge); --c-soft: var(--t-autovalores-soft); }

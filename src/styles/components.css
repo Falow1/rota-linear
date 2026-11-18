@@ -38,8 +38,8 @@
 }
 .btn.primary { --b: var(--c); --b-edge: var(--c-edge); --b-text: var(--on-c); border-color: var(--c-edge); }
 .btn.primary:disabled { --b: var(--surface-2); --b-edge: var(--surface-3); --b-text: var(--text-3); }
-.btn.ok { --b: var(--ok); --b-edge: var(--ok-edge); --b-text: #fff; }
-.btn.bad { --b: var(--bad); --b-edge: var(--bad-edge); --b-text: #fff; }
+.btn.ok { --b: var(--ok); --b-edge: var(--ok-edge); --b-text: var(--on-ok); }
+.btn.bad { --b: var(--bad); --b-edge: var(--bad-edge); --b-text: var(--on-bad); }
 .btn.soft { --b: var(--c-soft); --b-edge: color-mix(in srgb, var(--c) 35%, var(--c-soft)); --b-text: var(--c); }
 .btn.ghost {
   border: none;

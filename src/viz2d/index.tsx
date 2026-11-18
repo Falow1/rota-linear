@@ -189,9 +189,18 @@ export function DraggablePoint({
     if (constrain) q = constrain(q);
     return q;
   };
+  // O Mafs não aceita aria-label no ponto: o nome (com a posição atual) entra pelo DOM.
+  const wrap = useRef<SVGGElement>(null);
+  const fmt = (x: number) => String(Math.round(x * 100) / 100).replace(".", ",").replace("-", "−");
+  const aria = `Ponto ${label && label !== "?" ? label + " " : ""}arrastável em (${fmt(point[0])}; ${fmt(point[1])}). Use as setas do teclado para mover.`;
+  useLayoutEffect(() => {
+    wrap.current?.querySelector(".mafs-movable-point")?.setAttribute("aria-label", aria);
+  }, [aria]);
   return (
     <>
-      <MovablePoint point={point} onMove={(p) => onMove([p[0], p[1]])} color={color} constrain={c} />
+      <g ref={wrap}>
+        <MovablePoint point={point} onMove={(p) => onMove([p[0], p[1]])} color={color} constrain={c} />
+      </g>
       {label && <Label at={point} text={label} color={color} dir={dir} dist={22} />}
     </>
   );

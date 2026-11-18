@@ -6,8 +6,8 @@ import { ProgressBar } from "../ui/Feedback";
 import { Icon, TrackIcon } from "../ui/icons";
 import { NotFound } from "./NotFound";
 
-/** Deslocamento horizontal de cada nó do caminho (zigue-zague). */
-const ZIG = [0, 56, 84, 56, 0, -56, -84, -56];
+/** Deslocamento horizontal de cada nó do caminho (zigue-zague), em fração do máximo que cabe na tela (ver `.path-step`). */
+const ZIG = [0, 0.67, 1, 0.67, 0, -0.67, -1, -0.67];
 
 const STATUS_TEXT: Record<LessonStatus, string> = {
   nova: "Ainda não começou",
@@ -95,7 +95,7 @@ export function TrackPage() {
           const isCur = l.id === current;
           const isOpen = open === l.id;
           return (
-            <li key={l.id} className="path-step" style={{ ["--dx" as string]: `${ZIG[i % ZIG.length]}px` }}>
+            <li key={l.id} className="path-step" style={{ ["--z" as string]: ZIG[i % ZIG.length] }}>
               <button
                 type="button"
                 className={`node ${st}${isCur ? " current" : ""}`}
@@ -111,13 +111,13 @@ export function TrackPage() {
             </li>
           );
         })}
-        <li className="path-step" style={{ ["--dx" as string]: `${ZIG[ls.length % ZIG.length]}px` }}>
+        <li className="path-step" style={{ ["--z" as string]: ZIG[ls.length % ZIG.length] }}>
           <Link to={`/ficha/${track.id}`} className="node special" aria-label="Ficha de fórmulas da rota">
             <Icon name="book" size={28} />
           </Link>
           <span className="node-label">Ficha de fórmulas</span>
         </li>
-        <li className="path-step" style={{ ["--dx" as string]: `${ZIG[(ls.length + 1) % ZIG.length]}px` }}>
+        <li className="path-step" style={{ ["--z" as string]: ZIG[(ls.length + 1) % ZIG.length] }}>
           <Link to={`/desafio/${track.id}`} className={`node special trophy${done === ls.length ? " ready" : ""}`} aria-label="Desafio da rota">
             <Icon name="trophy" size={30} />
           </Link>

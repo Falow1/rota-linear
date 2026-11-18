@@ -166,16 +166,23 @@
   flex-direction: column;
   align-items: center;
   gap: 18px;
+  /* O zigue-zague é medido pela largura do caminho, para nunca passar da tela. */
+  container-type: inline-size;
 }
 .path-step {
+  --w: min(300px, 100cqw);
+  /* --z vai de −1 a 1; o deslocamento máximo é 84px ou o que sobra ao lado do rótulo. */
+  --shift: calc(var(--z, 0) * min(84px, (100cqw - var(--w)) / 2));
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  transform: translateX(var(--dx, 0));
-  width: 100%;
-  max-width: 300px;
+  transform: translateX(var(--shift));
+  width: var(--w);
   text-align: center;
+}
+@media (max-width: 480px) {
+  .path-step { --w: min(230px, 100cqw); }
 }
 .path-step:has(.node-pop) { z-index: 2; }
 .node {
@@ -203,7 +210,7 @@
 .node.andamento:active,
 .node.concluida:active,
 .node.current:active { box-shadow: 0 2px 0 var(--c-edge); }
-.node.dominada { background: var(--gold); color: #fff; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
+.node.dominada { background: var(--gold); color: var(--on-gold); box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
 .node.current::before {
   content: "";
   position: absolute;
@@ -242,10 +249,15 @@
 }
 @keyframes bob { 50% { transform: translate(-50%, -4px); } }
 .node.special { background: var(--surface); color: var(--c); border: 3px solid var(--border-strong); box-shadow: 0 6px 0 var(--border-strong); }
-.node.special.trophy.ready { background: var(--gold); color: #fff; border-color: transparent; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
+.node.special.trophy.ready { background: var(--gold); color: var(--on-gold); border-color: transparent; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
 .node-label { font-weight: 850; line-height: 1.25; margin-top: 6px; }
 .node-pop {
-  width: min(320px, calc(100vw - 32px));
+  --pw: min(320px, 100cqw);
+  --room: calc((100cqw - var(--pw)) / 2);
+  width: var(--pw);
+  flex: none;
+  /* Segue o nó do zigue-zague enquanto couber; se não couber, puxa o balão de volta para dentro do caminho. */
+  translate: calc(clamp(-1 * var(--room), var(--shift), var(--room)) - var(--shift)) 0;
   margin-top: 6px;
   padding: 16px;
   border-radius: 20px;
@@ -278,7 +290,7 @@
   height: 72px;
   border-radius: 22px;
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
   box-shadow: 0 5px 0 var(--brand-edge);
 }
 
