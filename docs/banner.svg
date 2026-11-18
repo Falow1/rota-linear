@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-label="Rota Linear: Geometria Analítica e Álgebra Linear passo a passo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f5fa"/>
+      <stop offset="1" stop-color="#e6ebff"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#c7ccdc"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="360" rx="28" fill="url(#bg)"/>
+  <rect width="1200" height="360" rx="28" fill="url(#dots)" opacity="0.55"/>
+
+  <!-- Título -->
+  <g font-family="Nunito, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="72" y="150" font-size="78" font-weight="800" fill="#1b1f33">Rota Linear</text>
+    <text x="74" y="200" font-size="24" font-weight="600" fill="#4b5270">Geometria Analítica e Álgebra Linear, passo a passo</text>
+    <g font-size="20" font-weight="800">
+      <rect x="72" y="236" width="128" height="44" rx="22" fill="#ffffff" stroke="#e0e3ee" stroke-width="2"/>
+      <text x="136" y="265" text-anchor="middle" fill="#3b5bfd">29 lições</text>
+      <rect x="212" y="236" width="118" height="44" rx="22" fill="#ffffff" stroke="#e0e3ee" stroke-width="2"/>
+      <text x="271" y="265" text-anchor="middle" fill="#16a34a">8 rotas</text>
+      <rect x="342" y="236" width="222" height="44" rx="22" fill="#ffffff" stroke="#e0e3ee" stroke-width="2"/>
+      <text x="453" y="265" text-anchor="middle" fill="#f43f5e">exercícios corrigidos</text>
+    </g>
+  </g>
+
+  <!-- Caminho em zigue-zague: uma parada por rota -->
+  <polyline points="742,120 798,230 854,120 910,230 966,120 1022,230 1078,120 1134,230" fill="none" stroke="#b9bfd2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 14"/>
+
+  <g font-family="Nunito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="25" font-weight="900" text-anchor="middle">
+    <g transform="translate(742 120)"><circle r="29" cy="6" fill="#1f4fd1"/><circle r="29" fill="#2f6bff"/><text y="9" fill="#ffffff">1</text></g>
+    <g transform="translate(798 230)"><circle r="29" cy="6" fill="#0f7a37"/><circle r="29" fill="#16a34a"/><text y="9" fill="#ffffff">2</text></g>
+    <g transform="translate(854 120)"><circle r="29" cy="6" fill="#6a3fd6"/><circle r="29" fill="#8b5cf6"/><text y="9" fill="#ffffff">3</text></g>
+    <g transform="translate(910 230)"><circle r="29" cy="6" fill="#a91a5a"/><circle r="29" fill="#db2777"/><text y="9" fill="#ffffff">4</text></g>
+    <g transform="translate(966 120)"><circle r="29" cy="6" fill="#c2570b"/><circle r="29" fill="#f97316"/><text y="9" fill="#1b1f33">5</text></g>
+    <g transform="translate(1022 230)"><circle r="29" cy="6" fill="#0a6e66"/><circle r="29" fill="#0d9488"/><text y="9" fill="#ffffff">6</text></g>
+    <g transform="translate(1078 120)"><circle r="29" cy="6" fill="#3a31b8"/><circle r="29" fill="#4f46e5"/><text y="9" fill="#ffffff">7</text></g>
+    <g transform="translate(1134 230)"><circle r="29" cy="6" fill="#c42645"/><circle r="29" fill="#f43f5e"/><text y="9" fill="#ffffff">8</text></g>
+  </g>
+</svg>
