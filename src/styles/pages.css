@@ -339,6 +339,16 @@
 /* ---------- Sobre ---------- */
 
 .about-steps { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 8px; }
+.qr-share { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+/* O QR fica claro também no tema escuro: a borda separa o quadrado branco do cartão. */
+.site-qr { flex: none; display: block; border-radius: var(--radius-sm); border: 2px solid var(--border); }
+.qr-share-text { flex: 1 1 220px; min-width: 0; display: grid; gap: 6px; justify-items: start; }
+.qr-share-text p { margin: 0; }
+.qr-url { font-weight: 800; color: var(--c); overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .qr-share { justify-content: center; }
+  .qr-share-text { justify-items: center; text-align: center; }
+}
 .card h2 { margin-bottom: 8px; }
 
 /* ---------- Celular ---------- */

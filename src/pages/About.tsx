@@ -2,10 +2,36 @@ import { useState } from "react";
 import { CREDITS, creditDetails } from "../credits";
 import { resetProgress } from "../learn/progress";
 import { Icon } from "../ui/icons";
+import { SiteQr } from "../ui/SiteQr";
+import { SITE_URL } from "../ui/qrData";
 
 export function About() {
   const [confirm, setConfirm] = useState(false);
   const [cleared, setCleared] = useState(false);
+  const [copied, setCopied] = useState<"" | "ok" | "fail">("");
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(SITE_URL);
+      setCopied("ok");
+      return;
+    } catch {
+      // Sem permissão para a área de transferência: tenta o jeito antigo, com um campo escondido.
+    }
+    try {
+      const field = document.createElement("textarea");
+      field.value = SITE_URL;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      const ok = document.execCommand("copy");
+      field.remove();
+      setCopied(ok ? "ok" : "fail");
+    } catch {
+      setCopied("fail");
+    }
+  };
   return (
     <div className="page narrow">
       <h1>Sobre o Rota Linear</h1>
@@ -31,6 +57,29 @@ export function About() {
             <b>Revise.</b> A revisão misturada puxa exercícios das lições concluídas, com mais peso no que você errou.
           </li>
         </ol>
+      </section>
+
+      <section className="card mt-16">
+        <h2>Abra no celular</h2>
+        <div className="qr-share">
+          <SiteQr />
+          <div className="qr-share-text">
+            <p className="muted">Aponte a câmera do celular para o código e o Rota Linear abre direto. Serve também para passar o site para a turma.</p>
+            <a className="qr-url" href={SITE_URL}>
+              {SITE_URL.replace(/^https:\/\//, "").replace(/\/$/, "")}
+            </a>
+            <div className="row wrap mt-8">
+              <button type="button" className="btn soft small" onClick={copyLink}>
+                <Icon name={copied === "ok" ? "check" : "link"} size={16} /> {copied === "ok" ? "Link copiado" : "Copiar link"}
+              </button>
+              {copied === "fail" && (
+                <span className="small-text muted" role="status">
+                  Não deu para copiar aqui; selecione o endereço acima.
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="card mt-16">
