@@ -6,7 +6,7 @@
   <img alt="React 19" src="https://img.shields.io/badge/React-19-3b5bfd?style=flat-square">
   <img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-4f46e5?style=flat-square">
   <img alt="Vite" src="https://img.shields.io/badge/Vite-8-8b5cf6?style=flat-square">
-  <img alt="Testes" src="https://img.shields.io/badge/testes-215%20passando-16a34a?style=flat-square">
+  <img alt="Testes" src="https://img.shields.io/badge/testes-222%20passando-16a34a?style=flat-square">
   <img alt="Sem conta" src="https://img.shields.io/badge/sem%20conta%2C%20sem%20servidor-progresso%20no%20navegador-0d9488?style=flat-square">
 </p>
 
@@ -46,7 +46,7 @@ No fim, a lição mostra os acertos de primeira, as fórmulas que foram para a f
 | 7 | **Matrizes que movem** | As colunas são destinos · Encadear e desfazer · Girar, refletir e achatar no espaço *(3D)* |
 | 8 | **Autovetores e projeções** | Direções que só esticam · Diagonalizar é trocar de eixos · Autoespaços em 3D *(3D)* · Endireitar uma base · A reta que mais se aproxima |
 
-A ordem é só uma sugestão: nenhuma lição fica bloqueada.
+A ordem é só uma sugestão: nenhuma lição fica bloqueada. Dá para começar por qualquer rota ou lição; cada rota marca a sua próxima lição, e o “Próxima” do fim da lição pula as que você já fez.
 
 ## Exercícios que não acabam
 
@@ -60,6 +60,7 @@ A ordem é só uma sugestão: nenhuma lição fica bloqueada.
 
 - O progresso fica salvo no **navegador**: em que cartão você parou, as lições concluídas e dominadas, os dias seguidos de estudo e os erros. Não tem conta, servidor nem rastreamento. Sem armazenamento disponível, o site funciona normalmente, só não lembra o que foi feito.
 - **Revisão misturada:** 8 exercícios das lições já feitas, com mais peso no que você errou e no que não pratica há dias.
+- **Revisão da rota:** ao terminar todas as lições de uma rota, a revisão dela é liberada na página Revisão: 8 exercícios só daquela rota, com o mesmo peso para os erros.
 - **Desafio da rota:** exercícios de todas as lições da rota, misturados.
 - **Fichas de fórmulas:** um resumo por rota (ou todas juntas), pronto para imprimir.
 
@@ -102,10 +103,11 @@ tests/            matemática, leitor de respostas, todos os geradores e todas a
 
 ## Testes
 
-`npm test` roda 215 testes. Entre eles:
+`npm test` roda 222 testes. Entre eles:
 
 - **Cada gerador** é sorteado com 300 sementes. A resposta dele precisa passar no próprio corretor, uma resposta errada típica precisa ser recusada, e todo o TeX do enunciado, da dica e da solução precisa ser válido.
 - **Cada lição:** o estado de solução de toda tarefa cumpre o objetivo (e o estado inicial não), toda pergunta aceita a própria resposta e toda fórmula renderiza.
+- **Progresso:** ordem livre, a próxima lição sugerida (dentro da rota e no curso) e a liberação da revisão de cada rota.
 - A matemática de base: produtos, escalonamento, classificação de cônicas e quádricas, autovalores 2×2 e 3×3, Gram–Schmidt e mínimos quadrados.
 
 ## Laboratório irmão

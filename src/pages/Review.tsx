@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { TRACKS, lessonsOf } from "../learn/catalog";
-import { doneCount, reviewCount, useProgress } from "../learn/progress";
+import { doneCount, reviewCount, trackComplete, useProgress } from "../learn/progress";
 import { Icon, TrackIcon } from "../ui/icons";
 import { Tex } from "../ui/Tex";
 
@@ -46,6 +46,51 @@ export function Review() {
           </button>
         )}
       </section>
+
+      <div className="section-head mt-24">
+        <h2>Revisão por rota</h2>
+      </div>
+      <p className="muted small-text">Quando você termina todas as lições de uma rota, a revisão dela aparece liberada aqui: 8 exercícios só daquela rota, puxando mais o que você errou.</p>
+      <div className="route-review-list mt-8">
+        {TRACKS.map((t) => {
+          const ls = lessonsOf(t.id);
+          const d = doneCount(p, ls.map((l) => l.id));
+          const ready = trackComplete(p, t.id);
+          const faltam = ls.length - d;
+          return (
+            <div key={t.id} className={`route-review t-${t.id}${ready ? " ready" : ""}`}>
+              <span className="ficha-art" aria-hidden="true">
+                <TrackIcon id={t.id} size={30} />
+              </span>
+              <span className="grow">
+                <b>
+                  Rota {t.num} · {t.title}
+                </b>
+                <small className={ready ? "ok-text" : "faint"}>
+                  {ready ? (
+                    <>
+                      <Icon name="check" size={14} stroke={3} /> Concluída: revisão liberada
+                    </>
+                  ) : (
+                    <>
+                      {d}/{ls.length} {ls.length === 1 ? "lição" : "lições"} · {faltam === 1 ? "falta 1 lição" : `faltam ${faltam} lições`} para liberar
+                    </>
+                  )}
+                </small>
+              </span>
+              {ready ? (
+                <Link to={`/revisao/rota/${t.id}`} className="btn primary small">
+                  <Icon name="shuffle" size={16} /> Revisar
+                </Link>
+              ) : (
+                <Link to={`/rota/${t.id}`} className="btn ghost small">
+                  Ir à rota
+                </Link>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
       <div className="section-head mt-24">
         <h2>Fichas de fórmulas</h2>

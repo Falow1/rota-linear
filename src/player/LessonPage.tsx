@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
-import { lessonBySlug, livreUrl, nextLesson, trackById, type LessonMeta } from "../learn/catalog";
-import { finishLesson, getProgress, saveCard } from "../learn/progress";
+import { lessonBySlug, livreUrl, trackById, type LessonMeta } from "../learn/catalog";
+import { finishLesson, getProgress, nextOpen, saveCard, trackComplete, useProgress } from "../learn/progress";
 import type { Card, LessonContent } from "../learn/types";
 import { loadLesson } from "../lessons";
 import { NotFound } from "../pages/NotFound";
@@ -43,7 +43,12 @@ function CardView({ card, onNext }: { card: Card; onNext: (firstTry?: boolean) =
 }
 
 function Finish({ meta, firstTry, total }: { meta: LessonMeta; firstTry: number; total: number }) {
-  const next = nextLesson(meta.id);
+  const p = useProgress();
+  // Segue para a próxima lição ainda não concluída (pula as que a pessoa já fez fora de ordem).
+  const next = nextOpen(p, meta.id);
+  const track = trackById(meta.track)!;
+  const nextTrack = next && next.track !== meta.track ? trackById(next.track) : undefined;
+  const routeDone = trackComplete(p, meta.track);
   return (
     <div className="finish">
       <Confetti />
@@ -71,13 +76,30 @@ function Finish({ meta, firstTry, total }: { meta: LessonMeta; firstTry: number;
             </div>
           ))}
         </section>
+        {routeDone && (
+          <section className="finish-route">
+            <span className="chip ok">
+              <Icon name="trophy" size={16} /> Rota {track.num} concluída
+            </span>
+            <p className="muted">
+              Você terminou todas as lições de <b>{track.title}</b>. A revisão desta rota foi liberada na página Revisão.
+            </p>
+            <Link to={`/revisao/rota/${track.id}`} className="btn soft wide">
+              <Icon name="shuffle" size={18} /> Revisar a rota
+            </Link>
+          </section>
+        )}
         <div className="finish-actions">
           <Link to={`/licao/${meta.slug}/pratica`} className="btn primary wide">
             <Icon name="target" size={18} /> Praticar agora
           </Link>
           {next && (
-            <Link to={`/licao/${next.slug}`} className="btn soft wide">
-              Próxima: {next.title} <Icon name="arrowRight" size={18} />
+            <Link to={`/licao/${next.slug}`} className="btn soft wide next-lesson">
+              <span>
+                Próxima: {next.title}
+                {nextTrack && <small className="next-route">Rota {nextTrack.num} · {nextTrack.title}</small>}
+              </span>
+              <Icon name="arrowRight" size={18} />
             </Link>
           )}
           <div className="row wrap" style={{ justifyContent: "center" }}>

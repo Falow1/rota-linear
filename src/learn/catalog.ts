@@ -203,10 +203,5 @@ export const trackById = (id: string) => TRACKS.find((t) => t.id === id);
 export const lessonBySlug = (slug: string) => LESSONS.find((l) => l.slug === slug);
 export const lessonById = (id: string) => LESSONS.find((l) => l.id === id);
 export const lessonsOf = (track: TrackId) => LESSONS.filter((l) => l.track === track);
-export const nextLesson = (id: string) => {
-  const i = LESSONS.findIndex((l) => l.id === id);
-  return i >= 0 ? LESSONS[i + 1] : undefined;
-};
-
 /** Endereço do módulo correspondente no Equação Viva. */
 export const livreUrl = (l: LessonMeta) => `https://falow1.github.io/equacao-viva/#/m/${l.livre}`;

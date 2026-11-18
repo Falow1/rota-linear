@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { LESSONS, type LessonMeta } from "./catalog";
+import { LESSONS, lessonsOf, type LessonMeta, type TrackId } from "./catalog";
 
 /**
  * Progresso guardado só neste navegador (localStorage). Sem conta, sem servidor.
@@ -20,6 +20,8 @@ export interface LessonProgress {
   best?: number;
   last?: number;
   at?: number;
+  /** Quando a lição foi concluída pela última vez (ms); guia a próxima sugestão. */
+  doneAt?: number;
 }
 
 export interface Progress {
@@ -53,6 +55,7 @@ export function migrate(raw: unknown): Progress {
       ...(Number.isFinite(p.best) ? { best: p.best as number } : {}),
       ...(Number.isFinite(p.last) ? { last: p.last as number } : {}),
       ...(Number.isFinite(p.at) ? { at: p.at as number } : {}),
+      ...(Number.isFinite(p.doneAt) ? { doneAt: p.doneAt as number } : {}),
     };
   }
   const nums = (x: unknown) => Object.fromEntries(Object.entries(obj(x)).filter(([, v]) => Number.isFinite(v))) as Record<string, number>;
@@ -138,7 +141,10 @@ export function finishLesson(id: string, firstTry: number, total: number) {
   const cur = lp(id);
   commit({
     ...state,
-    lessons: { ...state.lessons, [id]: { ...withoutRun(cur), card: 0, done: true, firstTry: Math.max(cur.done ? cur.firstTry : 0, firstTry), total } },
+    lessons: {
+      ...state.lessons,
+      [id]: { ...withoutRun(cur), card: 0, done: true, firstTry: Math.max(cur.done ? cur.firstTry : 0, firstTry), total, doneAt: Date.now() },
+    },
     streak: bumpStreak(state),
   });
 }
@@ -186,12 +192,47 @@ export function statusOf(p: Progress, id: string): LessonStatus {
   return l.card > 0 ? "andamento" : "nova";
 }
 
-/** Próxima lição sugerida: a que está em andamento, ou a primeira não concluída na ordem do curso. */
+/** Lição concluída mais recentemente (só conta quem tem data de conclusão). */
+function lastDone(p: Progress): string | undefined {
+  let best: string | undefined;
+  let t = -Infinity;
+  for (const [id, l] of Object.entries(p.lessons)) {
+    if (l.done && l.doneAt !== undefined && l.doneAt > t) {
+      t = l.doneAt;
+      best = id;
+    }
+  }
+  return best;
+}
+
+/**
+ * Primeira lição não concluída depois de `afterId`, na ordem do curso; no fim, dá a volta e procura do começo.
+ * Sem `afterId`, é a primeira não concluída do curso. Quem começa pela rota 5 segue para a 5, a 6… e só depois volta à 1.
+ */
+export function nextOpen(p: Progress, afterId?: string): LessonMeta | undefined {
+  const start = afterId ? LESSONS.findIndex((l) => l.id === afterId) + 1 : 0;
+  for (let k = 0; k < LESSONS.length; k++) {
+    const l = LESSONS[(start + k) % LESSONS.length];
+    if (!p.lessons[l.id]?.done) return l;
+  }
+  return undefined;
+}
+
+/** Próxima lição sugerida: a que está em andamento, ou a seguinte à última concluída. */
 export function suggested(p: Progress): LessonMeta | undefined {
-  return LESSONS.find((l) => statusOf(p, l.id) === "andamento") ?? LESSONS.find((l) => !p.lessons[l.id]?.done);
+  return LESSONS.find((l) => statusOf(p, l.id) === "andamento") ?? nextOpen(p, lastDone(p));
+}
+
+/** Por onde seguir dentro de uma rota: a lição em andamento, ou a primeira não concluída. Rota completa: nenhuma. */
+export function trackNext(p: Progress, trackId: TrackId): LessonMeta | undefined {
+  const ls = lessonsOf(trackId);
+  return ls.find((l) => statusOf(p, l.id) === "andamento") ?? ls.find((l) => !p.lessons[l.id]?.done);
 }
 
 export const doneCount = (p: Progress, ids: string[]) => ids.filter((id) => p.lessons[id]?.done).length;
+
+/** Todas as lições da rota concluídas: a revisão da rota fica liberada. */
+export const trackComplete = (p: Progress, trackId: TrackId) => lessonsOf(trackId).every((l) => p.lessons[l.id]?.done);
 
 /** Geradores com erros pendentes, das lições já concluídas. */
 export function reviewCount(p: Progress): number {

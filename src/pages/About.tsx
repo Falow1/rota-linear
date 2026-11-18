@@ -54,7 +54,8 @@ export function About() {
             <b>Domine.</b> Acertando 5 de 6 na prática, a lição ganha a estrela.
           </li>
           <li>
-            <b>Revise.</b> A revisão misturada puxa exercícios das lições concluídas, com mais peso no que você errou.
+            <b>Revise.</b> A revisão misturada puxa exercícios das lições concluídas, com mais peso no que você errou. Ao terminar uma rota, a
+            revisão só dela também é liberada.
           </li>
         </ol>
       </section>

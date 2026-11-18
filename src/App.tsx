@@ -24,7 +24,7 @@ function ScrollTop() {
 }
 
 /** Telas de estudo (lição, prática, desafio, revisão) ocupam a tela toda, sem a navegação. */
-const isFocus = (p: string) => p.startsWith("/licao/") || p.startsWith("/desafio/") || p === "/revisao/sessao";
+const isFocus = (p: string) => p.startsWith("/licao/") || p.startsWith("/desafio/") || p.startsWith("/revisao/sessao") || p.startsWith("/revisao/rota/");
 
 export function App() {
   useViewportVars();
@@ -58,6 +58,7 @@ export function App() {
             <Route path="/desafio/:trackId" element={<PracticePage mode="desafio" />} />
             <Route path="/revisao" element={<Review />} />
             <Route path="/revisao/sessao" element={<PracticePage mode="revisao" />} />
+            <Route path="/revisao/rota/:trackId" element={<PracticePage mode="rota" />} />
             <Route path="/ficha/:trackId" element={<FichaPage />} />
             <Route path="/sobre" element={<About />} />
             <Route path="*" element={<NotFound />} />

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkAnswer, parseNumber, proportional, tryNumber } from "../src/learn/answer";
-import { migrate } from "../src/learn/progress";
+import { migrate, nextOpen, suggested, trackComplete, trackNext } from "../src/learn/progress";
 import { mulberry32 } from "../src/learn/rng";
 import { practiceSet, reviewSet } from "../src/learn/session";
 import type { Generator } from "../src/learn/types";
@@ -68,6 +68,51 @@ describe("progresso guardado", () => {
     const p = migrate({ v: 1, lessons: { A1: { card: 3, done: true, firstTry: "x", best: 5 } }, misses: { "A1.comb": 2, bad: "x" } });
     expect(p.lessons.A1).toEqual({ card: 3, done: true, firstTry: 0, total: 0, best: 5 });
     expect(p.misses).toEqual({ "A1.comb": 2 });
+  });
+
+  it("guarda quando a lição foi concluída", () => {
+    expect(migrate({ v: 1, lessons: { A1: { card: 0, done: true, doneAt: 123 } } }).lessons.A1.doneAt).toBe(123);
+    expect(migrate({ v: 1, lessons: { A1: { card: 0, done: true, doneAt: "ontem" } } }).lessons.A1.doneAt).toBeUndefined();
+  });
+});
+
+describe("ordem livre e próxima lição", () => {
+  const done = (_id: string, doneAt?: number) => ({ card: 0, done: true, firstTry: 0, total: 0, ...(doneAt ? { doneAt } : {}) });
+  const prog = (lessons: Record<string, unknown>) => migrate({ v: 1, lessons });
+
+  it("sem progresso, sugere a primeira lição do curso", () => {
+    expect(suggested(prog({}))?.id).toBe("A1");
+    expect(nextOpen(prog({}))?.id).toBe("A1");
+  });
+
+  it("quem começa por outra rota segue nela, não volta para a rota 1", () => {
+    expect(suggested(prog({ E1: done("E1", 10) }))?.id).toBe("E2");
+    // Terminou a rota 5 (E1–E4): segue para a rota 6.
+    expect(suggested(prog({ E1: done("E1", 1), E2: done("E2", 2), E3: done("E3", 3), E4: done("E4", 4) }))?.id).toBe("F1");
+  });
+
+  it("a lição em andamento tem prioridade", () => {
+    expect(suggested(prog({ E1: done("E1", 10), C2: { card: 3, done: false } }))?.id).toBe("C2");
+  });
+
+  it("a próxima lição pula as que já foram feitas fora de ordem e dá a volta no fim", () => {
+    expect(nextOpen(prog({ A1: done("A1"), A2: done("A2"), A3: done("A3") }), "A1")?.id).toBe("B1");
+    expect(nextOpen(prog({ H5: done("H5") }), "H5")?.id).toBe("A1");
+    expect(nextOpen(prog({ A1: done("A1") }), "H5")?.id).toBe("A2");
+  });
+
+  it("cada rota marca a sua próxima lição e libera a revisão quando completa", () => {
+    const p = prog({ E2: done("E2"), F1: { card: 2, done: false } });
+    expect(trackNext(p, "sistemas")?.id).toBe("E1");
+    expect(trackNext(p, "espacos")?.id).toBe("F1");
+    expect(trackComplete(p, "sistemas")).toBe(false);
+    const q = prog({ A1: done("A1"), A2: done("A2"), A3: done("A3") });
+    expect(trackComplete(q, "vetores")).toBe(true);
+    expect(trackNext(q, "vetores")).toBeUndefined();
+  });
+
+  it("antes da data de conclusão existir, segue a ordem do curso", () => {
+    expect(suggested(prog({ A1: done("A1"), E1: done("E1") }))?.id).toBe("A2");
   });
 });
 

@@ -43,6 +43,7 @@ export function Home() {
                   </Link>
                 )}
               </div>
+              <p className="faint small-text mt-8">Ou escolha qualquer rota abaixo: nenhuma lição fica bloqueada.</p>
             </div>
             <div className="hero-art" aria-hidden="true">
               <TrackIcon id={track.id} size={120} />

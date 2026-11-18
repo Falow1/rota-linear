@@ -14,7 +14,8 @@ import { QuestionRunner } from "./QuestionRunner";
 import { RichText } from "./Rich";
 import { PlayerTop } from "./Stage";
 
-type Mode = "licao" | "desafio" | "revisao";
+/** licao: prática de uma lição · desafio: fim da rota · revisao: misturada · rota: revisão de uma rota concluída. */
+type Mode = "licao" | "desafio" | "revisao" | "rota";
 
 interface Result {
   item: Item;
@@ -30,8 +31,21 @@ function useSession(mode: Mode, lesson: LessonMeta | undefined, track: Track | u
     let alive = true;
     setItems(undefined);
     const p = getProgress();
+    const done = (ls: LessonMeta[]) => ls.filter((l) => p.lessons[l.id]?.done).map((l) => l.id);
     const ids =
-      mode === "licao" ? (lesson ? [lesson.id] : []) : mode === "desafio" ? (track ? lessonsOf(track.id).map((l) => l.id) : []) : LESSONS.filter((l) => p.lessons[l.id]?.done).map((l) => l.id);
+      mode === "licao"
+        ? lesson
+          ? [lesson.id]
+          : []
+        : mode === "desafio"
+          ? track
+            ? lessonsOf(track.id).map((l) => l.id)
+            : []
+          : mode === "rota"
+            ? track
+              ? done(lessonsOf(track.id))
+              : []
+            : done(LESSONS);
     if (ids.length === 0) {
       setItems(null);
       return;
@@ -53,7 +67,8 @@ function useSession(mode: Mode, lesson: LessonMeta | undefined, track: Track | u
 export default function PracticePage({ mode }: { mode: Mode }) {
   const { slug = "", trackId = "" } = useParams();
   const lesson = mode === "licao" ? lessonBySlug(slug) : undefined;
-  const track = mode === "licao" ? (lesson ? trackById(lesson.track) : undefined) : mode === "desafio" ? trackById(trackId) : undefined;
+  const track = mode === "licao" ? (lesson ? trackById(lesson.track) : undefined) : mode === "revisao" ? undefined : trackById(trackId);
+  const isReview = mode === "revisao" || mode === "rota";
   const [nonce, setNonce] = useState(0);
   const items = useSession(mode, lesson, track, nonce);
   const [idx, setIdx] = useState(0);
@@ -61,18 +76,25 @@ export default function PracticePage({ mode }: { mode: Mode }) {
 
   const exercises = useMemo(() => items?.map((it) => it.gen.make(mulberry32(it.seed))) ?? [], [items]);
 
-  if ((mode === "licao" && !lesson) || (mode === "desafio" && !track)) return <NotFound />;
+  if ((mode === "licao" && !lesson) || ((mode === "desafio" || mode === "rota") && !track)) return <NotFound />;
 
-  const exitTo = mode === "revisao" ? "/revisao" : `/rota/${track!.id}`;
+  const exitTo = isReview ? "/revisao" : `/rota/${track!.id}`;
   const theme = track ? `t-${track.id}` : "";
-  const label = mode === "licao" ? `Prática: ${lesson!.title}` : mode === "desafio" ? `Desafio: ${track!.title}` : "Revisão misturada";
+  const label =
+    mode === "licao" ? `Prática: ${lesson!.title}` : mode === "desafio" ? `Desafio: ${track!.title}` : mode === "rota" ? `Revisão: ${track!.title}` : "Revisão misturada";
 
   if (items === undefined) return <Loading text="Sorteando exercícios…" />;
   if (items === null || items.length === 0)
     return (
       <div className={`page narrow center-page ${theme}`}>
-        <h1>{mode === "revisao" ? "Nada para revisar ainda" : "Exercícios em construção"}</h1>
-        <p className="muted">{mode === "revisao" ? "Conclua uma lição para liberar a revisão misturada." : "Os exercícios desta parte ainda estão sendo preparados."}</p>
+        <h1>{isReview ? "Nada para revisar ainda" : "Exercícios em construção"}</h1>
+        <p className="muted">
+          {mode === "revisao"
+            ? "Conclua uma lição para liberar a revisão misturada."
+            : mode === "rota"
+              ? "Conclua as lições desta rota para liberar a revisão dela."
+              : "Os exercícios desta parte ainda estão sendo preparados."}
+        </p>
         <Link to={exitTo} className="btn primary mt-16">
           Voltar
         </Link>
@@ -156,7 +178,7 @@ export default function PracticePage({ mode }: { mode: Mode }) {
             </ul>
             <div className="finish-actions">
               <button type="button" className="btn primary wide" onClick={restart}>
-                <Icon name="shuffle" size={18} /> {mode === "revisao" ? "Outra revisão" : "Praticar de novo"}
+                <Icon name="shuffle" size={18} /> {isReview ? "Outra revisão" : "Praticar de novo"}
               </button>
               {mode === "licao" && score < n / 2 && (
                 <Link to={`/licao/${lesson!.slug}`} className="btn soft wide">
@@ -164,7 +186,7 @@ export default function PracticePage({ mode }: { mode: Mode }) {
                 </Link>
               )}
               <Link to={exitTo} className="btn ghost">
-                {mode === "revisao" ? "Voltar à revisão" : "Voltar à rota"}
+                {isReview ? "Voltar à revisão" : "Voltar à rota"}
               </Link>
             </div>
           </div>

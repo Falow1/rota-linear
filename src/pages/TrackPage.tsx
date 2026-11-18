@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { TRACKS, lessonsOf, livreUrl, trackById, type LessonMeta } from "../learn/catalog";
-import { MASTERY, doneCount, statusOf, suggested, useProgress, type LessonStatus } from "../learn/progress";
+import { MASTERY, doneCount, statusOf, trackComplete, trackNext, useProgress, type LessonStatus } from "../learn/progress";
 import { ProgressBar } from "../ui/Feedback";
 import { Icon, TrackIcon } from "../ui/icons";
 import { NotFound } from "./NotFound";
@@ -60,11 +60,12 @@ export function TrackPage() {
   const track = trackById(trackId);
   const p = useProgress();
   const ls = track ? lessonsOf(track.id) : [];
-  const next = suggested(p);
-  const current = ls.find((l) => l.id === next?.id)?.id ?? null;
+  // Cada rota marca a própria próxima lição, mesmo que a pessoa esteja estudando outra rota.
+  const current = track ? (trackNext(p, track.id)?.id ?? null) : null;
   const [open, setOpen] = useState<string | null>(current);
   if (!track) return <NotFound />;
   const done = doneCount(p, ls.map((l) => l.id));
+  const complete = trackComplete(p, track.id);
   const idx = TRACKS.indexOf(track);
   const prev = TRACKS[idx - 1], after = TRACKS[idx + 1];
 
@@ -83,6 +84,21 @@ export function TrackPage() {
               <b>{done}</b>/{ls.length}
             </span>
           </div>
+          {complete ? (
+            <div className="track-done mt-16">
+              <span className="chip ok">
+                <Icon name="check" size={16} stroke={3} /> Rota concluída
+              </span>
+              <span className="small-text muted">A revisão desta rota já está liberada.</span>
+              <Link to={`/revisao/rota/${track.id}`} className="btn primary small">
+                <Icon name="shuffle" size={16} /> Revisar a rota
+              </Link>
+            </div>
+          ) : (
+            <p className="faint small-text mt-8">
+              <Icon name="route" size={15} /> Comece por qualquer lição: nenhuma fica bloqueada, a ordem é só uma sugestão.
+            </p>
+          )}
         </div>
         <span className="banner-art" aria-hidden="true">
           <TrackIcon id={track.id} size={96} />

@@ -192,25 +192,29 @@
   width: 78px;
   height: 72px;
   border-radius: 50%;
-  border: none;
-  background: var(--surface-3);
-  color: var(--text-3);
-  box-shadow: 0 7px 0 var(--border-strong);
+  /* Lição ainda não começada: aberta (contorno na cor da rota), nunca com cara de trancada. */
+  --node-edge: color-mix(in srgb, var(--c) 55%, var(--border-strong));
+  border: 3px solid var(--node-edge);
+  background: var(--surface);
+  color: var(--c);
+  box-shadow: 0 7px 0 var(--node-edge);
   transition: transform 0.08s, box-shadow 0.08s;
   text-decoration: none;
 }
-.node:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--border-strong); }
+.node:hover { background: var(--c-soft); }
+.node:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--node-edge); }
 .node.andamento,
 .node.concluida,
 .node.current {
   background: var(--c);
   color: var(--on-c);
+  border-color: transparent;
   box-shadow: 0 7px 0 var(--c-edge);
 }
 .node.andamento:active,
 .node.concluida:active,
 .node.current:active { box-shadow: 0 2px 0 var(--c-edge); }
-.node.dominada { background: var(--gold); color: var(--on-gold); box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
+.node.dominada { background: var(--gold); color: var(--on-gold); border-color: transparent; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
 .node.current::before {
   content: "";
   position: absolute;
@@ -249,6 +253,8 @@
 }
 @keyframes bob { 50% { transform: translate(-50%, -4px); } }
 .node.special { background: var(--surface); color: var(--c); border: 3px solid var(--border-strong); box-shadow: 0 6px 0 var(--border-strong); }
+.track-done { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.track-banner .icon { vertical-align: -2px; }
 .node.special.trophy.ready { background: var(--gold); color: var(--on-gold); border-color: transparent; box-shadow: 0 7px 0 color-mix(in srgb, var(--gold) 70%, #6b4a00); }
 .node-label { font-weight: 850; line-height: 1.25; margin-top: 6px; }
 .node-pop {
@@ -293,6 +299,23 @@
   color: var(--on-brand);
   box-shadow: 0 5px 0 var(--brand-edge);
 }
+
+.route-review-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 10px; }
+.route-review {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  min-height: 64px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+}
+.route-review.ready { border-color: color-mix(in srgb, var(--c) 45%, var(--border)); background: color-mix(in srgb, var(--c-soft) 45%, var(--surface)); }
+.route-review:not(.ready) .ficha-art { background: var(--surface-2); color: var(--c); }
+.route-review .grow { min-width: 0; display: grid; gap: 2px; }
+.route-review small { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
+.route-review .btn { flex: none; }
 
 .ficha-list { display: flex; flex-direction: column; gap: 10px; }
 .ficha-acc {
